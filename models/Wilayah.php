@@ -278,7 +278,7 @@ class Wilayah {
     // KELURAHAN
     // ============================================
     
-    public function getAllKelurahan($page = 1, $perPage = 50, $search = '', $kecamatanId = null, $sortBy = 'kode', $sortOrder = 'ASC') {
+    public function getAllKelurahan($page = 1, $perPage = 50, $search = '', $kecamatanId = null, $sortBy = 'kode', $sortOrder = 'ASC', $provinsiId = null, $kabupatenId = null) {
         $offset = ($page - 1) * $perPage;
         
         $where = "1=1";
@@ -289,6 +289,16 @@ class Wilayah {
             $searchParam = "%{$search}%";
             $params[] = $searchParam;
             $params[] = $searchParam;
+        }
+        
+        if ($provinsiId) {
+            $where .= " AND p.id = ?";
+            $params[] = $provinsiId;
+        }
+        
+        if ($kabupatenId) {
+            $where .= " AND kk.id = ?";
+            $params[] = $kabupatenId;
         }
         
         if ($kecamatanId) {
@@ -314,22 +324,38 @@ class Wilayah {
         return $this->db->fetchAll($sql, $params);
     }
     
-    public function countKelurahan($search = '', $kecamatanId = null) {
+    public function countKelurahan($search = '', $kecamatanId = null, $provinsiId = null, $kabupatenId = null) {
         $where = "1=1";
         $params = [];
         
         if (!empty($search)) {
-            $where .= " AND (kode LIKE ? OR nama LIKE ?)";
+            $where .= " AND (kl.kode LIKE ? OR kl.nama LIKE ?)";
             $searchParam = "%{$search}%";
-            $params = [$searchParam, $searchParam];
+            $params[] = $searchParam;
+            $params[] = $searchParam;
+        }
+        
+        if ($provinsiId) {
+            $where .= " AND p.id = ?";
+            $params[] = $provinsiId;
+        }
+        
+        if ($kabupatenId) {
+            $where .= " AND kk.id = ?";
+            $params[] = $kabupatenId;
         }
         
         if ($kecamatanId) {
-            $where .= " AND kecamatan_id = ?";
+            $where .= " AND kl.kecamatan_id = ?";
             $params[] = $kecamatanId;
         }
         
-        $sql = "SELECT COUNT(*) as total FROM kelurahan WHERE {$where}";
+        $sql = "SELECT COUNT(*) as total 
+                FROM kelurahan kl 
+                LEFT JOIN kecamatan k ON kl.kecamatan_id = k.id 
+                LEFT JOIN kabupaten_kota kk ON k.kabupaten_kota_id = kk.id 
+                LEFT JOIN provinsi p ON kk.provinsi_id = p.id 
+                WHERE {$where}";
         $result = $this->db->fetchOne($sql, $params);
         return $result['total'] ?? 0;
     }

@@ -1,7 +1,7 @@
 <?php
 class UserController extends Controller {
     public function index() {
-        Auth::requireRole(['admin', 'manajemen']);
+        Auth::requireRole(['admin']);
         
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
@@ -34,7 +34,12 @@ class UserController extends Controller {
     }
     
     public function create() {
-        Auth::requireRole(['admin', 'manajemen']);
+        Auth::requireRole(['admin']);
+        
+        // Get master guru list for dropdown
+        require_once __DIR__ . '/../models/MasterGuru.php';
+        $masterGuruModel = new MasterGuru();
+        $masterGuruList = $masterGuruModel->getAll(1, 1000) ?: []; // Get all for dropdown
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
@@ -42,20 +47,20 @@ class UserController extends Controller {
                 'namalengkap' => $_POST['namalengkap'] ?? '',
                 'email' => $_POST['email'] ?? '',
                 'password' => $_POST['password'] ?? '',
-                'role' => $_POST['role'] ?? 'sales',
-                'kodesales' => $_POST['kodesales'] ?? null,
+                'role' => $_POST['role'] ?? 'tata_usaha',
+                'id_guru' => $_POST['id_guru'] ?? null,
                 'status' => $_POST['status'] ?? 'aktif'
             ];
             
-            // Validate kodesales for sales role
-            if ($data['role'] === 'sales') {
-                if (empty($data['kodesales'])) {
-                    Message::error('Kode Sales wajib diisi untuk role Sales');
+            // Validate id_guru for guru role
+            if ($data['role'] === 'guru') {
+                if (empty($data['id_guru'])) {
+                    Message::error('ID Guru wajib diisi untuk role Guru');
                     $this->redirect('/users/create');
                 }
             } else {
-                // Clear kodesales if role is not sales
-                $data['kodesales'] = null;
+                // Clear id_guru if role is not guru
+                $data['id_guru'] = null;
             }
             
             // Handle picture upload
@@ -87,12 +92,14 @@ class UserController extends Controller {
             $this->redirect('/users');
         }
         
-        $data = [];
+        $data = [
+            'masterGuruList' => $masterGuruList
+        ];
         $this->view('users/create', $data);
     }
     
     public function edit($id) {
-        Auth::requireRole(['admin', 'manajemen']);
+        Auth::requireRole(['admin']);
         
         $userModel = new User();
         $user = $userModel->findById($id);
@@ -102,25 +109,30 @@ class UserController extends Controller {
             $this->redirect('/users');
         }
         
+        // Get master guru list for dropdown
+        require_once __DIR__ . '/../models/MasterGuru.php';
+        $masterGuruModel = new MasterGuru();
+        $masterGuruList = $masterGuruModel->getAll(1, 1000) ?: []; // Get all for dropdown
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'username' => $_POST['username'] ?? '',
                 'namalengkap' => $_POST['namalengkap'] ?? '',
                 'email' => $_POST['email'] ?? '',
-                'role' => $_POST['role'] ?? 'sales',
-                'kodesales' => $_POST['kodesales'] ?? null,
+                'role' => $_POST['role'] ?? 'tata_usaha',
+                'id_guru' => $_POST['id_guru'] ?? null,
                 'status' => $_POST['status'] ?? 'aktif'
             ];
             
-            // Validate kodesales for sales role
-            if ($data['role'] === 'sales') {
-                if (empty($data['kodesales'])) {
-                    Message::error('Kode Sales wajib diisi untuk role Sales');
+            // Validate id_guru for guru role
+            if ($data['role'] === 'guru') {
+                if (empty($data['id_guru'])) {
+                    Message::error('ID Guru wajib diisi untuk role Guru');
                     $this->redirect("/users/edit/{$id}");
                 }
             } else {
-                // Clear kodesales if role is not sales
-                $data['kodesales'] = null;
+                // Clear id_guru if role is not guru
+                $data['id_guru'] = null;
             }
             
             // Check username uniqueness (except current user)
@@ -159,12 +171,15 @@ class UserController extends Controller {
             $this->redirect('/users');
         }
         
-        $data = ['user' => $user];
+        $data = [
+            'user' => $user,
+            'masterGuruList' => $masterGuruList
+        ];
         $this->view('users/edit', $data);
     }
     
     public function delete($id) {
-        Auth::requireRole(['admin', 'manajemen']);
+        Auth::requireRole(['admin']);
         
         $userModel = new User();
         $user = $userModel->findById($id);

@@ -31,19 +31,29 @@ class Auth {
         return self::user() && self::user()['role'] === 'admin';
     }
     
-    public static function isManajemen() {
+    public static function isTataUsaha() {
         $user = self::user();
-        return $user && ($user['role'] === 'admin' || $user['role'] === 'manajemen');
+        return $user && ($user['role'] === 'admin' || $user['role'] === 'tata_usaha');
     }
     
-    public static function isOperator() {
+    public static function isGuru() {
         $user = self::user();
-        return $user && $user['role'] === 'operator';
+        return $user && $user['role'] === 'guru';
     }
 
-    public static function isSales() {
+    public static function isKepalaSekolah() {
         $user = self::user();
-        return $user && $user['role'] === 'sales';
+        return $user && $user['role'] === 'kepala_sekolah';
+    }
+    
+    public static function isPenilikSekolah() {
+        $user = self::user();
+        return $user && $user['role'] === 'penilik_sekolah';
+    }
+    
+    public static function isWaliMurid() {
+        $user = self::user();
+        return $user && $user['role'] === 'wali_murid';
     }
     
     public static function requireAuth() {

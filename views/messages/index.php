@@ -87,17 +87,19 @@ require __DIR__ . '/../layouts/header.php';
 											$config = require __DIR__ . '/../../config/app.php';
 											$avatarInitial = strtoupper(substr($message['sender_name'] ?? 'U', 0, 1));
 											?>
-											<?php if (!empty($message['sender_picture'])): ?>
-												<img src="<?= BASE_URL . $config['upload_url'] . htmlspecialchars($message['sender_picture']) ?>" 
-														alt="<?= htmlspecialchars($message['sender_name']) ?>" 
-														class="rounded-circle me-2"
-														style="width: 32px; height: 32px; object-fit: cover;"
-														onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-											<?php else: ?>
-												<div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-													<?= $avatarInitial ?>
-												</div>
-											<?php endif; ?>
+											<div class="sender-avatar-wrapper me-2" style="width: 32px; height: 32px; flex-shrink: 0;">
+												<?php if (!empty($message['sender_picture'])): ?>
+													<img src="<?= BASE_URL . $config['upload_url'] . htmlspecialchars($message['sender_picture']) ?>" 
+															alt="<?= htmlspecialchars($message['sender_name']) ?>" 
+															class="rounded-circle"
+															style="width: 32px; height: 32px; object-fit: cover;"
+															onerror="this.outerHTML='<div class=\'bg-primary text-white rounded-circle d-flex align-items-center justify-content-center\' style=\'width: 32px; height: 32px;\'><?= $avatarInitial ?></div>';">
+												<?php else: ?>
+													<div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+														<?= $avatarInitial ?>
+													</div>
+												<?php endif; ?>
+											</div>
 											<div>
 												<div class="fw-bold"><?= htmlspecialchars($message['sender_name'] ?? 'Unknown') ?></div>
 												<small class="text-muted"><?= htmlspecialchars($message['sender_email'] ?? '-') ?></small>

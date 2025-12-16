@@ -55,17 +55,29 @@ require __DIR__ . '/../layouts/header.php';
                                 <select class="form-select" id="role" name="role" required>
                                     <option value="">Pilih Role</option>
                                     <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
-                                    <option value="manajemen" <?= $user['role'] == 'manajemen' ? 'selected' : '' ?>>Manajemen</option>
-                                    <option value="sales" <?= $user['role'] == 'sales' ? 'selected' : '' ?>>Sales</option>
-                                    <option value="operator" <?= $user['role'] == 'operator' ? 'selected' : '' ?>>Operator</option>
+                                    <option value="tata_usaha" <?= $user['role'] == 'tata_usaha' ? 'selected' : '' ?>>Tata Usaha</option>
+                                    <option value="guru" <?= $user['role'] == 'guru' ? 'selected' : '' ?>>Guru</option>
+                                    <option value="kepala_sekolah" <?= $user['role'] == 'kepala_sekolah' ? 'selected' : '' ?>>Kepala Sekolah</option>
+                                    <option value="penilik_sekolah" <?= $user['role'] == 'penilik_sekolah' ? 'selected' : '' ?>>Penilik Sekolah</option>
+                                    <option value="wali_murid" <?= $user['role'] == 'wali_murid' ? 'selected' : '' ?>>Wali Murid</option>
                                 </select>
                             </div>
                         </div>
                         
 						<div class="row">
-							<div class="col-md-6 mb-3" id="kodesales-wrapper">
-								<label for="kodesales" class="form-label">Kode Sales <span class="text-danger" id="kodesales-required">*</span></label>
-								<input type="text" class="form-control" id="kodesales" name="kodesales" value="<?= htmlspecialchars($user['kodesales'] ?? '') ?>" placeholder="Masukkan kode sales">
+							<div class="col-md-6 mb-3" id="id_guru-wrapper" style="display: <?= ($user['role'] == 'guru') ? 'block' : 'none' ?>;">
+								<label for="id_guru" class="form-label">Master Guru <span class="text-danger" id="id_guru-required" style="display: <?= ($user['role'] == 'guru') ? 'inline' : 'none' ?>;">*</span></label>
+								<select class="form-select" id="id_guru" name="id_guru" <?= ($user['role'] == 'guru') ? 'required' : '' ?>>
+									<option value="">Pilih Master Guru</option>
+									<?php foreach ($masterGuruList as $guru): ?>
+										<option value="<?= $guru['id'] ?>" <?= ($user['id_guru'] ?? null) == $guru['id'] ? 'selected' : '' ?>>
+											<?= htmlspecialchars($guru['namaguru']) ?>
+											<?php if (!empty($guru['nip'])): ?>
+												(<?= htmlspecialchars($guru['nip']) ?>)
+											<?php endif; ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
 							</div>
                             
                             <div class="col-md-6 mb-3">
@@ -82,7 +94,6 @@ require __DIR__ . '/../layouts/header.php';
                             <label for="picture" class="form-label">Foto Profil</label>
                             <?php if ($user['picture'] && file_exists(__DIR__ . '/../../uploads/' . $user['picture'])): ?>
                             <div class="mb-3">
-                                <p class="mb-2"><strong>Foto Saat Ini:</strong></p>
                                 <img src="<?= htmlspecialchars($baseUrl) ?>/uploads/<?= htmlspecialchars($user['picture']) ?>" alt="Current Picture" class="img-thumbnail rounded" style="max-width: 200px;">
                             </div>
                             <?php else: ?>
@@ -107,25 +118,27 @@ require __DIR__ . '/../layouts/header.php';
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const roleSelect = document.getElementById('role');
-    const kodesalesWrapper = document.getElementById('kodesales-wrapper');
-	const kodesalesInput = document.getElementById('kodesales');
-    const kodesalesRequired = document.getElementById('kodesales-required');
+    const idGuruWrapper = document.getElementById('id_guru-wrapper');
+	const idGuruInput = document.getElementById('id_guru');
+    const idGuruRequired = document.getElementById('id_guru-required');
     
-    function toggleKodesales() {
-        if (roleSelect.value === 'sales') {
-            kodesalesWrapper.style.display = 'block';
-			kodesalesInput.setAttribute('required', 'required');
-            kodesalesRequired.style.display = 'inline';
+    function toggleIdGuru() {
+        if (roleSelect.value === 'guru') {
+            idGuruWrapper.style.display = 'block';
+			idGuruInput.setAttribute('required', 'required');
+            idGuruRequired.style.display = 'inline';
         } else {
-            kodesalesWrapper.style.display = 'none';
-			kodesalesInput.removeAttribute('required');
-			kodesalesInput.value = '';
-            kodesalesRequired.style.display = 'none';
+            idGuruWrapper.style.display = 'none';
+			idGuruInput.removeAttribute('required');
+			if (roleSelect.value !== 'guru') {
+				idGuruInput.value = '';
+			}
+            idGuruRequired.style.display = 'none';
         }
     }
     
-    toggleKodesales();
-    roleSelect.addEventListener('change', toggleKodesales);
+    toggleIdGuru();
+    roleSelect.addEventListener('change', toggleIdGuru);
 });
 </script>
 

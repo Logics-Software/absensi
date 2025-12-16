@@ -61,15 +61,27 @@ require __DIR__ . '/../layouts/header.php';
                                 <select class="form-select" id="role" name="role" required>
                                     <option value="">Pilih Role</option>
                                     <option value="admin">Admin</option>
-                                    <option value="manajemen">Manajemen</option>
-                                    <option value="sales" selected>Sales</option>
-                                    <option value="operator">Operator</option>
+                                    <option value="tata_usaha" selected>Tata Usaha</option>
+                                    <option value="guru">Guru</option>
+                                    <option value="kepala_sekolah">Kepala Sekolah</option>
+                                    <option value="penilik_sekolah">Penilik Sekolah</option>
+                                    <option value="wali_murid">Wali Murid</option>
                                 </select>
                             </div>
                             
-							<div class="col-md-6 mb-3" id="kodesales-wrapper">
-								<label for="kodesales" class="form-label">Kode Sales <span class="text-danger" id="kodesales-required">*</span></label>
-								<input type="text" class="form-control" id="kodesales" name="kodesales" placeholder="Masukkan kode sales">
+							<div class="col-md-6 mb-3" id="id_guru-wrapper" style="display: none;">
+								<label for="id_guru" class="form-label">Master Guru <span class="text-danger" id="id_guru-required">*</span></label>
+								<select class="form-select" id="id_guru" name="id_guru">
+									<option value="">Pilih Master Guru</option>
+									<?php foreach ($masterGuruList as $guru): ?>
+										<option value="<?= $guru['id'] ?>">
+											<?= htmlspecialchars($guru['namaguru']) ?>
+											<?php if (!empty($guru['nip'])): ?>
+												(<?= htmlspecialchars($guru['nip']) ?>)
+											<?php endif; ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
 							</div>
                         </div>
                         
@@ -104,25 +116,25 @@ require __DIR__ . '/../layouts/header.php';
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const roleSelect = document.getElementById('role');
-    const kodesalesWrapper = document.getElementById('kodesales-wrapper');
-	const kodesalesInput = document.getElementById('kodesales');
-    const kodesalesRequired = document.getElementById('kodesales-required');
+    const idGuruWrapper = document.getElementById('id_guru-wrapper');
+	const idGuruInput = document.getElementById('id_guru');
+    const idGuruRequired = document.getElementById('id_guru-required');
     
-    function toggleKodesales() {
-        if (roleSelect.value === 'sales') {
-            kodesalesWrapper.style.display = 'block';
-			kodesalesInput.setAttribute('required', 'required');
-            kodesalesRequired.style.display = 'inline';
+    function toggleIdGuru() {
+        if (roleSelect.value === 'guru') {
+            idGuruWrapper.style.display = 'block';
+			idGuruInput.setAttribute('required', 'required');
+            idGuruRequired.style.display = 'inline';
         } else {
-            kodesalesWrapper.style.display = 'none';
-            kodesalesInput.removeAttribute('required');
-			kodesalesInput.value = '';
-            kodesalesRequired.style.display = 'none';
+            idGuruWrapper.style.display = 'none';
+            idGuruInput.removeAttribute('required');
+			idGuruInput.value = '';
+            idGuruRequired.style.display = 'none';
         }
     }
     
-    toggleKodesales();
-    roleSelect.addEventListener('change', toggleKodesales);
+    toggleIdGuru();
+    roleSelect.addEventListener('change', toggleIdGuru);
     
     // Password toggle
     const passwordToggle = document.querySelector('[data-target="password"]');

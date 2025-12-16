@@ -158,6 +158,7 @@ label {
 
 .card {
   border-radius: 0.5rem;
+  border-color: #d0d8d2;
   overflow: hidden;
 }
 
@@ -175,7 +176,8 @@ label {
 .card-header {
   padding: 1rem 1rem;
   border-radius: 0.05rem 0.5rem 0 0;
-  background-color: #fff8de;
+  background-color: #f7f7dc;
+  border-color: #d0d8d2;
   overflow: hidden;
 }
 
@@ -194,7 +196,7 @@ label {
 .card-header-table {
   padding: 1rem 1rem;
   border-radius: 0.05rem 0.5rem 0 0;
-  background-color: #fff8de;
+  background-color: #f7f7dc;
   overflow: hidden;
 }
 
@@ -318,7 +320,7 @@ body > header.app-header {
   z-index: 1002 !important;
   margin: 0;
   padding: 0;
-  background-color: #0b0e1a;
+  background-color: #03045e;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
@@ -880,6 +882,7 @@ header.app-header .navbar .container-fluid {
 
   .header-app-name {
     font-size: 1rem;
+    display: none; /* Hide brand text on mobile */
   }
 
   /* Show hamburger menu button */
@@ -896,7 +899,7 @@ header.app-header .navbar .container-fluid {
     top: 56px;
     left: 0;
     right: 0;
-    background-color: #0b0e1a;
+    background-color: #03045e;
     flex-direction: column;
     align-items: stretch;
     gap: 0;

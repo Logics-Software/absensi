@@ -229,7 +229,7 @@ require __DIR__ . '/../layouts/header.php';
                                     <?php endif; ?>
                                     <td>
                                         <a href="<?= htmlspecialchars($typeRoutes[$type] ?? '/wilayah/provinsi') ?>/edit/<?= $item['id'] ?>" class="btn btn-sm btn-outline-primary"><?= icon('pen-to-square', '', 14) ?> Edit</a>
-                                        <a href="<?= htmlspecialchars($typeRoutes[$type] ?? '/wilayah/provinsi') ?>/delete/<?= $item['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus?')"><?= icon('trash-can', '', 14) ?> Hapus</a>
+                                        <a href="<?= htmlspecialchars($typeRoutes[$type] ?? '/wilayah/provinsi') ?>/delete/<?= $item['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="event.preventDefault(); confirmDelete('Apakah Anda yakin ingin menghapus <?= htmlspecialchars($typeLabels[$type] ?? 'data') ?> <?= htmlspecialchars($item['nama'] ?? '') ?>?', this.href); return false;"><?= icon('trash-can', '', 14) ?> Hapus</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

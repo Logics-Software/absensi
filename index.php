@@ -123,6 +123,26 @@ $router->get('/wilayah/api/kabupaten', 'WilayahController', 'apiKabupaten');
 $router->get('/wilayah/api/kecamatan', 'WilayahController', 'apiKecamatan');
 $router->get('/wilayah/api/kelurahan', 'WilayahController', 'apiKelurahan');
 
+// Konfigurasi routes (admin only)
+$router->get('/konfigurasi', 'KonfigurasiController', 'index');
+$router->post('/konfigurasi', 'KonfigurasiController', 'index');
+
+// Master Guru routes (admin only)
+$router->get('/masterguru', 'MasterGuruController', 'index');
+$router->get('/masterguru/create', 'MasterGuruController', 'create');
+$router->post('/masterguru/create', 'MasterGuruController', 'create');
+$router->get('/masterguru/edit/{id}', 'MasterGuruController', 'edit');
+$router->post('/masterguru/edit/{id}', 'MasterGuruController', 'edit');
+$router->get('/masterguru/delete/{id}', 'MasterGuruController', 'delete');
+
+// Tahun Ajaran routes (admin only)
+$router->get('/tahunajaran', 'TahunAjaranController', 'index');
+$router->get('/tahunajaran/create', 'TahunAjaranController', 'create');
+$router->post('/tahunajaran/create', 'TahunAjaranController', 'create');
+$router->get('/tahunajaran/edit/{id}', 'TahunAjaranController', 'edit');
+$router->post('/tahunajaran/edit/{id}', 'TahunAjaranController', 'edit');
+$router->get('/tahunajaran/delete/{id}', 'TahunAjaranController', 'delete');
+
 // Dispatch
 $router->dispatch();
 

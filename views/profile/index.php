@@ -76,13 +76,24 @@ require __DIR__ . '/../layouts/header.php';
                         
                         <div class="mb-3">
                             <label class="form-label">Role</label>
-                            <input type="text" class="form-control" value="<?= ucfirst($user['role']) ?>" disabled>
+                            <?php
+                            $roleLabels = [
+                                'admin' => 'Admin',
+                                'tata_usaha' => 'Tata Usaha',
+                                'guru' => 'Guru',
+                                'kepala_sekolah' => 'Kepala Sekolah',
+                                'penilik_sekolah' => 'Penilik Sekolah',
+                                'wali_murid' => 'Wali Murid'
+                            ];
+                            $roleLabel = $roleLabels[$user['role']] ?? ucfirst($user['role']);
+                            ?>
+                            <input type="text" class="form-control" value="<?= $roleLabel ?>" disabled>
                         </div>
                         
-                        <?php if ($user['kodesales']): ?>
+                        <?php if ($user['id_guru']): ?>
                         <div class="mb-3">
-                            <label class="form-label">Kode Sales</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($user['kodesales']) ?>" disabled>
+                            <label class="form-label">ID Guru</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($user['id_guru']) ?>" disabled>
                         </div>
                         <?php endif; ?>
                     </div>

@@ -145,20 +145,19 @@ if (!isset($message) || empty($message)) {
 										<?php 
 										$recipientAvatarInitial = strtoupper(substr($recipient['recipient_name'] ?? 'U', 0, 1));
 										?>
-										<?php if (!empty($recipient['recipient_picture'])): ?>
-											<img src="<?= BASE_URL . $config['upload_url'] . htmlspecialchars($recipient['recipient_picture']) ?>" 
-													alt="<?= htmlspecialchars($recipient['recipient_name']) ?>" 
-													class="rounded-circle me-2"
-													style="width: 32px; height: 32px; object-fit: cover;"
-													onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-											<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; display: none;">
-												<?= $recipientAvatarInitial ?>
-											</div>
-										<?php else: ?>
-											<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-												<?= $recipientAvatarInitial ?>
-											</div>
-										<?php endif; ?>
+										<div class="recipient-avatar-wrapper me-2" style="width: 32px; height: 32px; flex-shrink: 0;">
+											<?php if (!empty($recipient['recipient_picture'])): ?>
+												<img src="<?= BASE_URL . $config['upload_url'] . htmlspecialchars($recipient['recipient_picture']) ?>" 
+														alt="<?= htmlspecialchars($recipient['recipient_name']) ?>" 
+														class="rounded-circle"
+														style="width: 32px; height: 32px; object-fit: cover;"
+														onerror="this.outerHTML='<div class=\'bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center\' style=\'width: 32px; height: 32px;\'><?= $recipientAvatarInitial ?></div>';">
+											<?php else: ?>
+												<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+													<?= $recipientAvatarInitial ?>
+												</div>
+											<?php endif; ?>
+										</div>
 										<div class="flex-grow-1">
 											<div class="fw-bold"><?= htmlspecialchars($recipient['recipient_name']) ?></div>
 											<small class="text-muted"><?= htmlspecialchars($recipient['recipient_email']) ?></small>

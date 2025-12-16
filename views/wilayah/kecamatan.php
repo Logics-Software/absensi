@@ -80,7 +80,7 @@ require __DIR__ . '/../layouts/header.php';
                         <form method="GET" action="/wilayah/kecamatan" id="searchForm">
                             <div class="row g-2 align-items-end">
                                 <div class="col-12 col-md-2">
-                                    <select name="provinsi_id" class="form-select" id="filterProvinsi" onchange="loadFilterKabupaten()">
+                                    <select name="provinsi_id" class="form-select" id="filterProvinsi" onchange="loadFilterKabupaten(); document.getElementById('searchForm').submit();">
                                         <option value="">Semua Provinsi</option>
                                         <?php foreach ($provinsiList as $p): ?>
                                         <option value="<?= $p['id'] ?>" <?= (isset($provinsiId) && $provinsiId == $p['id']) ? 'selected' : '' ?>>
@@ -90,7 +90,7 @@ require __DIR__ . '/../layouts/header.php';
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <select name="kabupaten_id" class="form-select" id="filterKabupaten">
+                                    <select name="kabupaten_id" class="form-select" id="filterKabupaten" onchange="document.getElementById('searchForm').submit()">
                                         <option value="">Semua Kabupaten/Kota</option>
                                         <?php if (!empty($kabupatenList)): ?>
                                         <?php foreach ($kabupatenList as $k): ?>
@@ -148,8 +148,8 @@ require __DIR__ . '/../layouts/header.php';
                                     <td><?= htmlspecialchars($item['kabupaten_nama'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($item['provinsi_nama'] ?? '-') ?></td>
                                     <td>
-                                        <a href="/wilayah/kecamatan/edit/<?= $item['id'] ?>" class="btn btn-sm btn-outline-primary"><?= icon('pen-to-square', '', 14) ?> Edit</a>
-                                        <a href="/wilayah/kecamatan/delete/<?= $item['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus?')"><?= icon('trash-can', '', 14) ?> Hapus</a>
+                                        <a href="/wilayah/kecamatan/edit/<?= $item['id'] ?>" class="btn btn-sm btn-primary"><?= icon('pen-to-square', '', 14) ?> Edit</a>
+                                        <a href="/wilayah/kecamatan/delete/<?= $item['id'] ?>" class="btn btn-sm btn-danger" onclick="event.preventDefault(); confirmDelete('Apakah Anda yakin ingin menghapus kecamatan <?= htmlspecialchars($item['nama']) ?>?', this.href); return false;"><?= icon('trash-can', '', 14) ?> Hapus</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

@@ -8,6 +8,27 @@ if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
 // Define BASE_URL constant for compatibility
 define('BASE_URL', $baseUrl);
 
+// Get konfigurasi logo and nama sekolah if available
+$konfigurasiLogo = null;
+$konfigurasiNamaSekolah = null;
+if (Auth::check()) {
+    try {
+        require_once __DIR__ . '/../../models/Konfigurasi.php';
+        $konfigurasiModel = new Konfigurasi();
+        $konfigurasi = $konfigurasiModel->get();
+        if ($konfigurasi) {
+            if (!empty($konfigurasi['logo']) && file_exists(__DIR__ . '/../../uploads/' . $konfigurasi['logo'])) {
+                $konfigurasiLogo = $baseUrl . $config['upload_url'] . $konfigurasi['logo'];
+            }
+            if (!empty($konfigurasi['namasekolah'])) {
+                $konfigurasiNamaSekolah = $konfigurasi['namasekolah'];
+            }
+        }
+    } catch (Exception $e) {
+        // Silently fail if Konfigurasi model not available
+    }
+}
+
 // Helper function to display icon
 if (!function_exists('icon')) {
     function icon($name, $class = '', $size = 16) {
@@ -30,10 +51,15 @@ if (!function_exists('icon')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?= $title ?? 'Absensi' ?> - Absensi</title>
+    <?php if ($konfigurasiLogo): ?>
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($konfigurasiLogo) ?>">
+    <link rel="apple-touch-icon" href="<?= htmlspecialchars($konfigurasiLogo) ?>">
+    <?php else: ?>
     <link rel="icon" type="image/svg+xml" href="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo.png">
     <link rel="icon" type="image/png" sizes="32x32" href="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo-32.png">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo-64.png">
     <link rel="apple-touch-icon" sizes="128x128" href="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo-128.png">
+    <?php endif; ?>
     
     <?php
     // Cache busting - use file modification time as version
@@ -97,9 +123,9 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                     <!-- Logo Section -->
                     <div class="header-logo-section">
                         <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
-                            <img src="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo.png" alt="Logo" class="header-logo">
+                            <img src="<?= htmlspecialchars($konfigurasiLogo ?: $baseUrl . '/assets/images/logo.png') ?>" alt="Logo" class="header-logo">
                         </a>
-                        <h1 class="header-app-name"><?= htmlspecialchars($appConfig['app_name']) ?></h1>
+                        <h1 class="header-app-name"><?= htmlspecialchars($konfigurasiNamaSekolah ?: $appConfig['app_name']) ?></h1>
                     </div>
 
                     <!-- Hamburger Menu Button (Mobile Only) -->
@@ -113,12 +139,21 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                     <nav class="header-nav-menu" id="headerNavMenu">
                         <a href="/dashboard" class="nav-link fw-bold <?= ($_SERVER['REQUEST_URI'] ?? '') === '/dashboard' ? 'active' : '' ?>">Dashboard</a>
                         
-                        <?php if (Auth::isManajemen()): ?>
-                        <a href="/users" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false ? 'active' : '' ?>">Manajemen User</a>
-                        <?php endif; ?>
-                        
                         <?php if (Auth::isAdmin()): ?>
-                        <a href="/wilayah/provinsi" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false ? 'active' : '' ?>">Wilayah</a>
+                        <div class="nav-dropdown">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                                Setting
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
+                                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                <a href="/konfigurasi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false ? 'active' : '' ?>">Konfigurasi</a>
+                <a href="/users" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false ? 'active' : '' ?>">User</a>
+                <a href="/wilayah/provinsi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false ? 'active' : '' ?>">Wilayah</a>
+                            </div>
+                        </div>
+                        <a href="/masterguru" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/masterguru') !== false ? 'active' : '' ?>">Master Guru</a>
                         <?php endif; ?>
                         
                         <a href="/messages" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/messages') !== false ? 'active' : '' ?>">Pesan</a>                        
@@ -328,6 +363,15 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                     hamburgerToggle.setAttribute('aria-expanded', 'false');
                     hamburgerToggle.classList.remove('active');
                     navMenu.classList.remove('show');
+                    // Close all dropdowns
+                    const dropdowns = navMenu.querySelectorAll('.nav-dropdown');
+                    dropdowns.forEach(function(dropdown) {
+                        dropdown.classList.remove('show');
+                        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+                        if (toggle) {
+                            toggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
                 });
             });
         }

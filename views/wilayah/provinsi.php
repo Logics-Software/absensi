@@ -119,8 +119,10 @@ require __DIR__ . '/../layouts/header.php';
                                     <td><?= htmlspecialchars($item['kode']) ?></td>
                                     <td><?= htmlspecialchars($item['nama']) ?></td>
                                     <td>
-                                        <a href="/wilayah/provinsi/edit/<?= $item['id'] ?>" class="btn btn-sm btn-outline-primary"><?= icon('pen-to-square', '', 14) ?> Edit</a>
-                                        <a href="/wilayah/provinsi/delete/<?= $item['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus?')"><?= icon('trash-can', '', 14) ?> Hapus</a>
+                                    <div class="d-flex gap-1">
+                                        <a href="/wilayah/provinsi/edit/<?= $item['id'] ?>" class="btn btn-sm btn-primary"><?= icon('pen-to-square', '', 14) ?></a>
+                                        <a href="/wilayah/provinsi/delete/<?= $item['id'] ?>" class="btn btn-sm btn-danger" onclick="event.preventDefault(); confirmDelete('Apakah Anda yakin ingin menghapus provinsi <?= htmlspecialchars($item['nama']) ?>?', this.href); return false;"><?= icon('trash-can', '', 14) ?></a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

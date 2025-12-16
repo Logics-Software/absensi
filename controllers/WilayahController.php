@@ -396,6 +396,8 @@ class WilayahController extends Controller {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 50;
         $search = $_GET['search'] ?? '';
+        $provinsiId = isset($_GET['provinsi_id']) ? (int)$_GET['provinsi_id'] : null;
+        $kabupatenId = isset($_GET['kabupaten_id']) ? (int)$_GET['kabupaten_id'] : null;
         $kecamatanId = isset($_GET['kecamatan_id']) ? (int)$_GET['kecamatan_id'] : null;
         $sortBy = $_GET['sort_by'] ?? 'kode';
         $sortOrder = $_GET['sort_order'] ?? 'ASC';
@@ -406,10 +408,34 @@ class WilayahController extends Controller {
         }
         
         $wilayahModel = new Wilayah();
-        $kelurahan = $wilayahModel->getAllKelurahan($page, $perPage, $search, $kecamatanId, $sortBy, $sortOrder);
-        $total = $wilayahModel->countKelurahan($search, $kecamatanId);
+        $kelurahan = $wilayahModel->getAllKelurahan($page, $perPage, $search, $kecamatanId, $sortBy, $sortOrder, $provinsiId, $kabupatenId);
+        $total = $wilayahModel->countKelurahan($search, $kecamatanId, $provinsiId, $kabupatenId);
         $totalPages = $perPage > 0 ? (int)ceil($total / $perPage) : 1;
         $provinsiList = $wilayahModel->getAllProvinsi(1, 1000);
+        
+        // Get kabupaten list for filter dropdown
+        $kabupatenList = [];
+        if ($provinsiId) {
+            $kabupatenList = $wilayahModel->getKabupatenKotaByProvinsi($provinsiId);
+        } elseif ($kabupatenId) {
+            $kabupatenItem = $wilayahModel->getKabupatenKotaById($kabupatenId);
+            if ($kabupatenItem) {
+                $provinsiId = $kabupatenItem['provinsi_id'];
+                $kabupatenList = $wilayahModel->getKabupatenKotaByProvinsi($kabupatenItem['provinsi_id']);
+            }
+        }
+        
+        // Get kecamatan list for filter dropdown
+        $kecamatanList = [];
+        if ($kabupatenId) {
+            $kecamatanList = $wilayahModel->getKecamatanByKabupaten($kabupatenId);
+        } elseif ($kecamatanId) {
+            $kecamatanItem = $wilayahModel->getKecamatanById($kecamatanId);
+            if ($kecamatanItem) {
+                $kabupatenId = $kecamatanItem['kabupaten_kota_id'];
+                $kecamatanList = $wilayahModel->getKecamatanByKabupaten($kecamatanItem['kabupaten_kota_id']);
+            }
+        }
         
         $data = [
             'kelurahan' => $kelurahan,
@@ -418,7 +444,11 @@ class WilayahController extends Controller {
             'total' => $total,
             'totalPages' => $totalPages,
             'search' => $search,
+            'provinsiId' => $provinsiId,
+            'kabupatenId' => $kabupatenId,
             'kecamatanId' => $kecamatanId,
+            'kabupatenList' => $kabupatenList,
+            'kecamatanList' => $kecamatanList,
             'provinsiList' => $provinsiList,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder
