@@ -93,11 +93,12 @@ class MasterGuru {
      * Create master guru
      */
     public function create($data) {
-        $sql = "INSERT INTO masterguru (nip, namaguru, jeniskelamin, tempatlahir, tanggallahir, alamatguru, idprovinsi, idkabupaten, idkecamatan, idkelurahan, kodepos, nomorhp, email, foto, iduser, status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO masterguru (nip, noabsensi, namaguru, jeniskelamin, tempatlahir, tanggallahir, alamatguru, idprovinsi, idkabupaten, idkecamatan, idkelurahan, kodepos, nomorhp, email, foto, iduser, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $params = [
             $data['nip'] ?? null,
+            $data['noabsensi'] ?? null,
             $data['namaguru'] ?? null,
             $data['jeniskelamin'] ?? null,
             $data['tempatlahir'] ?? null,
@@ -126,7 +127,7 @@ class MasterGuru {
         $fields = [];
         $params = [];
         
-        $allowedFields = ['nip', 'namaguru', 'jeniskelamin', 'tempatlahir', 'tanggallahir', 'alamatguru', 
+        $allowedFields = ['nip', 'noabsensi', 'namaguru', 'jeniskelamin', 'tempatlahir', 'tanggallahir', 'alamatguru', 
                           'idprovinsi', 'idkabupaten', 'idkecamatan', 'idkelurahan', 'kodepos', 'nomorhp', 
                           'email', 'foto', 'iduser', 'status'];
         

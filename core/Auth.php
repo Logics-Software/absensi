@@ -33,7 +33,9 @@ class Auth {
     
     public static function isTataUsaha() {
         $user = self::user();
-        return $user && ($user['role'] === 'admin' || $user['role'] === 'tata_usaha');
+        if (!$user) return false;
+        $role = $user['role'];
+        return $role === 'admin' || $role === 'tatausaha' || $role === 'tata_usaha'; // Support old data
     }
     
     public static function isGuru() {
@@ -43,17 +45,21 @@ class Auth {
 
     public static function isKepalaSekolah() {
         $user = self::user();
-        return $user && $user['role'] === 'kepala_sekolah';
+        if (!$user) return false;
+        $role = $user['role'];
+        return $role === 'kepalasekolah' || $role === 'kepala_sekolah' || $role === 'penilik_sekolah'; // Support old data
     }
     
     public static function isPenilikSekolah() {
-        $user = self::user();
-        return $user && $user['role'] === 'penilik_sekolah';
+        // Deprecated: penilik_sekolah merged into kepalasekolah
+        return self::isKepalaSekolah();
     }
     
     public static function isWaliMurid() {
         $user = self::user();
-        return $user && $user['role'] === 'wali_murid';
+        if (!$user) return false;
+        $role = $user['role'];
+        return $role === 'walimurid' || $role === 'wali_murid'; // Support old data
     }
     
     public static function requireAuth() {

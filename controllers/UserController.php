@@ -42,15 +42,51 @@ class UserController extends Controller {
         $masterGuruList = $masterGuruModel->getAll(1, 1000) ?: []; // Get all for dropdown
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validate and sanitize role
+            $validRoles = ['admin', 'tatausaha', 'guru', 'kepalasekolah', 'walimurid'];
+            $role = trim($_POST['role'] ?? '');
+            if (empty($role) || !in_array($role, $validRoles)) {
+                Message::error('Role tidak valid. Silakan pilih role yang tersedia.');
+                $this->redirect('/users/create');
+            }
+            
+            // Validate and sanitize status
+            $validStatuses = ['aktif', 'nonaktif'];
+            $status = trim($_POST['status'] ?? '');
+            if (empty($status) || !in_array($status, $validStatuses)) {
+                $status = 'aktif'; // Default fallback
+            }
+            
             $data = [
-                'username' => $_POST['username'] ?? '',
-                'namalengkap' => $_POST['namalengkap'] ?? '',
-                'email' => $_POST['email'] ?? '',
+                'username' => trim($_POST['username'] ?? ''),
+                'namalengkap' => trim($_POST['namalengkap'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
                 'password' => $_POST['password'] ?? '',
-                'role' => $_POST['role'] ?? 'tata_usaha',
-                'id_guru' => $_POST['id_guru'] ?? null,
-                'status' => $_POST['status'] ?? 'aktif'
+                'role' => $role,
+                'id_guru' => !empty($_POST['id_guru']) ? (int)$_POST['id_guru'] : null,
+                'status' => $status
             ];
+            
+            // Validate required fields
+            if (empty($data['username'])) {
+                Message::error('Username wajib diisi');
+                $this->redirect('/users/create');
+            }
+            
+            if (empty($data['namalengkap'])) {
+                Message::error('Nama lengkap wajib diisi');
+                $this->redirect('/users/create');
+            }
+            
+            if (empty($data['email'])) {
+                Message::error('Email wajib diisi');
+                $this->redirect('/users/create');
+            }
+            
+            if (empty($data['password'])) {
+                Message::error('Password wajib diisi');
+                $this->redirect('/users/create');
+            }
             
             // Validate id_guru for guru role
             if ($data['role'] === 'guru') {
@@ -87,9 +123,15 @@ class UserController extends Controller {
                 $this->redirect('/users/create');
             }
             
-            $userModel->create($data);
-            Message::success('User berhasil ditambahkan');
-            $this->redirect('/users');
+            try {
+                $userModel->create($data);
+                Message::success('User berhasil ditambahkan');
+                $this->redirect('/users');
+            } catch (Exception $e) {
+                error_log("Error creating user: " . $e->getMessage());
+                Message::error('Gagal menambahkan user. Silakan coba lagi atau hubungi administrator.');
+                $this->redirect('/users/create');
+            }
         }
         
         $data = [
@@ -109,20 +151,56 @@ class UserController extends Controller {
             $this->redirect('/users');
         }
         
+        // Normalize status for old data (convert 'non aktif' to 'nonaktif')
+        if (isset($user['status']) && $user['status'] == 'non aktif') {
+            $user['status'] = 'nonaktif';
+        }
+        
         // Get master guru list for dropdown
         require_once __DIR__ . '/../models/MasterGuru.php';
         $masterGuruModel = new MasterGuru();
         $masterGuruList = $masterGuruModel->getAll(1, 1000) ?: []; // Get all for dropdown
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validate and sanitize role
+            $validRoles = ['admin', 'tatausaha', 'guru', 'kepalasekolah', 'walimurid'];
+            $role = trim($_POST['role'] ?? '');
+            if (empty($role) || !in_array($role, $validRoles)) {
+                Message::error('Role tidak valid. Silakan pilih role yang tersedia.');
+                $this->redirect("/users/edit/{$id}");
+            }
+            
+            // Validate and sanitize status
+            $validStatuses = ['aktif', 'nonaktif'];
+            $status = trim($_POST['status'] ?? '');
+            if (empty($status) || !in_array($status, $validStatuses)) {
+                $status = 'aktif'; // Default fallback
+            }
+            
             $data = [
-                'username' => $_POST['username'] ?? '',
-                'namalengkap' => $_POST['namalengkap'] ?? '',
-                'email' => $_POST['email'] ?? '',
-                'role' => $_POST['role'] ?? 'tata_usaha',
-                'id_guru' => $_POST['id_guru'] ?? null,
-                'status' => $_POST['status'] ?? 'aktif'
+                'username' => trim($_POST['username'] ?? ''),
+                'namalengkap' => trim($_POST['namalengkap'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'role' => $role,
+                'id_guru' => !empty($_POST['id_guru']) ? (int)$_POST['id_guru'] : null,
+                'status' => $status
             ];
+            
+            // Validate required fields
+            if (empty($data['username'])) {
+                Message::error('Username wajib diisi');
+                $this->redirect("/users/edit/{$id}");
+            }
+            
+            if (empty($data['namalengkap'])) {
+                Message::error('Nama lengkap wajib diisi');
+                $this->redirect("/users/edit/{$id}");
+            }
+            
+            if (empty($data['email'])) {
+                Message::error('Email wajib diisi');
+                $this->redirect("/users/edit/{$id}");
+            }
             
             // Validate id_guru for guru role
             if ($data['role'] === 'guru') {
@@ -164,11 +242,37 @@ class UserController extends Controller {
                     Message::error($e->getMessage());
                     $this->redirect("/users/edit/{$id}");
                 }
+            } else {
+                // Keep existing picture if not uploaded
+                if (isset($user['picture'])) {
+                    $data['picture'] = $user['picture'];
+                }
             }
             
-            $userModel->update($id, $data);
-            Message::success('User berhasil diupdate');
-            $this->redirect('/users');
+            try {
+                $result = $userModel->update($id, $data);
+                if ($result) {
+                    Message::success('User berhasil diupdate');
+                    $this->redirect('/users');
+                } else {
+                    Message::error('Gagal mengupdate user. Tidak ada perubahan data.');
+                    $this->redirect("/users/edit/{$id}");
+                }
+            } catch (PDOException $e) {
+                error_log("Error updating user (PDO): " . $e->getMessage());
+                $errorMsg = 'Gagal mengupdate user. ';
+                if (strpos($e->getMessage(), 'Data truncated') !== false) {
+                    $errorMsg .= 'Data yang dimasukkan tidak valid.';
+                } else {
+                    $errorMsg .= 'Silakan coba lagi atau hubungi administrator.';
+                }
+                Message::error($errorMsg);
+                $this->redirect("/users/edit/{$id}");
+            } catch (Exception $e) {
+                error_log("Error updating user: " . $e->getMessage());
+                Message::error('Gagal mengupdate user. Silakan coba lagi atau hubungi administrator.');
+                $this->redirect("/users/edit/{$id}");
+            }
         }
         
         $data = [

@@ -47,6 +47,18 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
                         </div>
                         
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="jenjang" class="form-label">Jenjang</label>
+                                <select class="form-select" id="jenjang" name="jenjang">
+                                    <option value="">Pilih Jenjang</option>
+                                    <option value="sd" <?= ($konfigurasi['jenjang'] ?? '') === 'sd' ? 'selected' : '' ?>>SD/MI Sederajat</option>
+                                    <option value="smp" <?= ($konfigurasi['jenjang'] ?? '') === 'smp' ? 'selected' : '' ?>>SMP/MTs Sederajat</option>
+                                    <option value="sma" <?= ($konfigurasi['jenjang'] ?? '') === 'sma' ? 'selected' : '' ?>>SMA/SMK/MA Sederajat</option>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div class="mb-3">
                             <label for="alamatsekolah" class="form-label">Alamat Sekolah</label>
                             <textarea class="form-control" id="alamatsekolah" name="alamatsekolah" rows="1" 

@@ -54,6 +54,7 @@ class MasterGuruController extends Controller {
             
             $data = [
                 'nip' => $_POST['nip'] ?? null,
+                'noabsensi' => $_POST['noabsensi'] ?? null,
                 'namaguru' => $_POST['namaguru'] ?? null,
                 'jeniskelamin' => $_POST['jeniskelamin'] ?? null,
                 'tempatlahir' => $_POST['tempatlahir'] ?? null,
@@ -146,6 +147,7 @@ class MasterGuruController extends Controller {
             
             $data = [
                 'nip' => $_POST['nip'] ?? null,
+                'noabsensi' => $_POST['noabsensi'] ?? null,
                 'namaguru' => $_POST['namaguru'] ?? null,
                 'jeniskelamin' => $_POST['jeniskelamin'] ?? null,
                 'tempatlahir' => $_POST['tempatlahir'] ?? null,

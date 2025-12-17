@@ -141,19 +141,34 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                         
                         <?php if (Auth::isAdmin()): ?>
                         <div class="nav-dropdown">
-                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/jurusan') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/kelas') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
                                 Setting
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
                                     <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </button>
                             <div class="nav-dropdown-menu">
-                <a href="/konfigurasi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false ? 'active' : '' ?>">Konfigurasi</a>
-                <a href="/users" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false ? 'active' : '' ?>">User</a>
-                <a href="/wilayah/provinsi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false ? 'active' : '' ?>">Wilayah</a>
+                                <a href="/konfigurasi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false ? 'active' : '' ?>">Konfigurasi</a>
+                                <a href="/users" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false ? 'active' : '' ?>">User</a>
+                                <a href="/wilayah/provinsi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false ? 'active' : '' ?>">Wilayah</a>
+                                <a href="/tahunajaran" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/tahunajaran') !== false ? 'active' : '' ?>">Tahun Ajaran</a>
+                                <a href="/jurusan" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/jurusan') !== false ? 'active' : '' ?>">Jurusan</a>
+                                <a href="/kelas" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/kelas') !== false ? 'active' : '' ?>">Kelas</a>
+                                <a href="/holiday" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/holiday') !== false ? 'active' : '' ?>">Hari Libur</a>
                             </div>
                         </div>
-                        <a href="/masterguru" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/masterguru') !== false ? 'active' : '' ?>">Master Guru</a>
+                        <div class="nav-dropdown">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/masterguru') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/mastersiswa') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                                Master
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
+                                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                                <a href="/masterguru" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/masterguru') !== false ? 'active' : '' ?>">Data Guru</a>
+                                <a href="/mastersiswa" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/mastersiswa') !== false ? 'active' : '' ?>">Data Siswa</a>
+                            </div>
+                        </div>
                         <?php endif; ?>
                         
                         <a href="/messages" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/messages') !== false ? 'active' : '' ?>">Pesan</a>                        

@@ -40,6 +40,15 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
                             
                             <div class="col-md-6 mb-3">
+                                <label for="noabsensi" class="form-label">No. Absensi</label>
+                                <input type="text" class="form-control" id="noabsensi" name="noabsensi" 
+                                       value="<?= htmlspecialchars($masterGuru['noabsensi'] ?? '') ?>" 
+                                       placeholder="Masukkan nomor absensi" maxlength="20">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
                                 <label for="namaguru" class="form-label">Nama Guru <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="namaguru" name="namaguru" 
                                        value="<?= htmlspecialchars($masterGuru['namaguru'] ?? '') ?>" 

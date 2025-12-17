@@ -1,20 +1,38 @@
 <?php
 $title = 'Login';
-require __DIR__ . '/../layouts/header.php';
-?>
 
-<?php
+// Get konfigurasi logo for login form BEFORE header.php (which may override it)
 $config = require __DIR__ . '/../../config/app.php';
 $baseUrl = rtrim($config['base_url'], '/');
 if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
     $baseUrl = '/';
 }
+
+$loginLogoUrl = $baseUrl . '/assets/images/logo.png'; // Default logo
+
+// Get logo from konfigurasi (same logic as header.php but without Auth::check())
+try {
+    require_once __DIR__ . '/../../models/Konfigurasi.php';
+    $konfigurasiModel = new Konfigurasi();
+    $konfigurasi = $konfigurasiModel->get();
+    if ($konfigurasi && !empty($konfigurasi['logo'])) {
+        $logoFilePath = __DIR__ . '/../../uploads/' . $konfigurasi['logo'];
+        if (file_exists($logoFilePath)) {
+            $loginLogoUrl = $baseUrl . $config['upload_url'] . $konfigurasi['logo'];
+        }
+    }
+} catch (Exception $e) {
+    // Silently fail if Konfigurasi model not available
+}
+
+// Now require header (which may set its own $konfigurasiLogo, but we use $loginLogoUrl)
+require __DIR__ . '/../layouts/header.php';
 ?>
 <div class="login-container">
     <div class="login-card card">
         <div class="card-body">
             <div class="login-logo text-center mb-4">
-                <img src="<?= htmlspecialchars($baseUrl) ?>/assets/images/logo.png" alt="Logo" class="login-logo-img">
+                <img src="<?= htmlspecialchars($loginLogoUrl) ?>" alt="Logo" class="login-logo-img">
             </div>
             <h3 class="card-title text-center">Login Absensi</h3>
             <form method="POST" action="/login" class="login-form">

@@ -1,10 +1,35 @@
 <?php
-// Set timezone
-date_default_timezone_set('Asia/Jakarta');
+// Load config first to check debug mode
+$config = require __DIR__ . '/config/app.php';
 
-// Error reporting (disable in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Set timezone
+date_default_timezone_set($config['timezone'] ?? 'Asia/Jakarta');
+
+// Error reporting based on debug mode and environment
+$isDebug = $config['debug'] ?? false;
+$environment = $config['environment'] ?? 'production';
+
+if ($isDebug && $environment === 'development') {
+    // Development mode: Show all errors
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+} else {
+    // Production mode: Hide errors, log them instead
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    ini_set('log_errors', 1);
+    
+    // Create logs directory if it doesn't exist
+    $logDir = __DIR__ . '/logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+    
+    // Set error log file
+    ini_set('error_log', $logDir . '/error.log');
+}
 
 // Override PHP upload settings if possible (only works if not disabled by server)
 // This helps when php.ini cannot be modified
@@ -142,6 +167,40 @@ $router->post('/tahunajaran/create', 'TahunAjaranController', 'create');
 $router->get('/tahunajaran/edit/{id}', 'TahunAjaranController', 'edit');
 $router->post('/tahunajaran/edit/{id}', 'TahunAjaranController', 'edit');
 $router->get('/tahunajaran/delete/{id}', 'TahunAjaranController', 'delete');
+
+// Jurusan routes (admin only)
+$router->get('/jurusan', 'JurusanController', 'index');
+$router->get('/jurusan/create', 'JurusanController', 'create');
+$router->post('/jurusan/create', 'JurusanController', 'create');
+$router->get('/jurusan/edit/{id}', 'JurusanController', 'edit');
+$router->post('/jurusan/edit/{id}', 'JurusanController', 'edit');
+$router->get('/jurusan/delete/{id}', 'JurusanController', 'delete');
+
+// Kelas routes (admin only)
+$router->get('/kelas', 'KelasController', 'index');
+$router->get('/kelas/create', 'KelasController', 'create');
+$router->post('/kelas/create', 'KelasController', 'create');
+$router->get('/kelas/edit/{id}', 'KelasController', 'edit');
+$router->post('/kelas/edit/{id}', 'KelasController', 'edit');
+$router->get('/kelas/delete/{id}', 'KelasController', 'delete');
+
+// Master Siswa routes (admin only)
+$router->get('/mastersiswa', 'MastersiswaController', 'index');
+$router->get('/mastersiswa/create', 'MastersiswaController', 'create');
+$router->post('/mastersiswa/create', 'MastersiswaController', 'create');
+$router->get('/mastersiswa/edit/{id}', 'MastersiswaController', 'edit');
+$router->post('/mastersiswa/edit/{id}', 'MastersiswaController', 'edit');
+$router->get('/mastersiswa/delete/{id}', 'MastersiswaController', 'delete');
+$router->get('/mastersiswa/api/getkelas', 'MastersiswaController', 'apiGetKelas');
+
+// Holiday routes (admin only)
+$router->get('/holiday', 'HolidayController', 'index');
+$router->get('/holiday/create', 'HolidayController', 'create');
+$router->post('/holiday/create', 'HolidayController', 'create');
+$router->get('/holiday/edit/{id}', 'HolidayController', 'edit');
+$router->post('/holiday/edit/{id}', 'HolidayController', 'edit');
+$router->get('/holiday/delete/{id}', 'HolidayController', 'delete');
+$router->get('/holiday/api/getholidays', 'HolidayController', 'apiGetHolidays');
 
 // Dispatch
 $router->dispatch();

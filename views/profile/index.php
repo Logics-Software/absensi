@@ -79,13 +79,16 @@ require __DIR__ . '/../layouts/header.php';
                             <?php
                             $roleLabels = [
                                 'admin' => 'Admin',
-                                'tata_usaha' => 'Tata Usaha',
+                                'tatausaha' => 'Tata Usaha',
+                                'tata_usaha' => 'Tata Usaha', // Support old data
                                 'guru' => 'Guru',
-                                'kepala_sekolah' => 'Kepala Sekolah',
-                                'penilik_sekolah' => 'Penilik Sekolah',
-                                'wali_murid' => 'Wali Murid'
+                                'kepalasekolah' => 'Kepala Sekolah',
+                                'kepala_sekolah' => 'Kepala Sekolah', // Support old data
+                                'penilik_sekolah' => 'Kepala Sekolah', // Support old data
+                                'walimurid' => 'Wali Murid',
+                                'wali_murid' => 'Wali Murid' // Support old data
                             ];
-                            $roleLabel = $roleLabels[$user['role']] ?? ucfirst($user['role']);
+                            $roleLabel = $roleLabels[$user['role']] ?? ucfirst(str_replace('_', ' ', $user['role']));
                             ?>
                             <input type="text" class="form-control" value="<?= $roleLabel ?>" disabled>
                         </div>

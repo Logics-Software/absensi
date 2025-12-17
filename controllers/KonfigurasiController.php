@@ -11,6 +11,7 @@ class KonfigurasiController extends Controller {
             $data = [
                 'npsn' => $_POST['npsn'] ?? null,
                 'namasekolah' => $_POST['namasekolah'] ?? null,
+                'jenjang' => $_POST['jenjang'] ?? null,
                 'alamatsekolah' => $_POST['alamatsekolah'] ?? null,
                 'skpendirian' => $_POST['skpendirian'] ?? null,
                 'tanggalskpendirian' => $_POST['tanggalskpendirian'] ?? null,

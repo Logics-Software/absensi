@@ -54,12 +54,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
                                 <select class="form-select" id="role" name="role" required>
                                     <option value="">Pilih Role</option>
-                                    <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
-                                    <option value="tata_usaha" <?= $user['role'] == 'tata_usaha' ? 'selected' : '' ?>>Tata Usaha</option>
+                                    <option value="admin" <?= ($user['role'] == 'admin' || $user['role'] == 'admin') ? 'selected' : '' ?>>Admin</option>
+                                    <option value="tatausaha" <?= ($user['role'] == 'tatausaha' || $user['role'] == 'tata_usaha') ? 'selected' : '' ?>>Tata Usaha</option>
                                     <option value="guru" <?= $user['role'] == 'guru' ? 'selected' : '' ?>>Guru</option>
-                                    <option value="kepala_sekolah" <?= $user['role'] == 'kepala_sekolah' ? 'selected' : '' ?>>Kepala Sekolah</option>
-                                    <option value="penilik_sekolah" <?= $user['role'] == 'penilik_sekolah' ? 'selected' : '' ?>>Penilik Sekolah</option>
-                                    <option value="wali_murid" <?= $user['role'] == 'wali_murid' ? 'selected' : '' ?>>Wali Murid</option>
+                                    <option value="kepalasekolah" <?= ($user['role'] == 'kepalasekolah' || $user['role'] == 'kepala_sekolah' || $user['role'] == 'penilik_sekolah') ? 'selected' : '' ?>>Kepala Sekolah</option>
+                                    <option value="walimurid" <?= ($user['role'] == 'walimurid' || $user['role'] == 'wali_murid') ? 'selected' : '' ?>>Wali Murid</option>
                                 </select>
                             </div>
                         </div>
@@ -85,7 +84,7 @@ require __DIR__ . '/../layouts/header.php';
                                 <select class="form-select" id="status" name="status" required>
                                     <option value="">Pilih Status</option>
                                     <option value="aktif" <?= $user['status'] == 'aktif' ? 'selected' : '' ?>>Aktif</option>
-                                    <option value="non aktif" <?= $user['status'] == 'non aktif' ? 'selected' : '' ?>>Non Aktif</option>
+                                    <option value="nonaktif" <?= ($user['status'] == 'nonaktif' || $user['status'] == 'non aktif') ? 'selected' : '' ?>>Non Aktif</option>
                                 </select>
                             </div>
                         </div>

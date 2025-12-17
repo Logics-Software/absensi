@@ -38,12 +38,13 @@ class Konfigurasi {
      * Create konfigurasi
      */
     private function create($data) {
-        $sql = "INSERT INTO konfigurasi (npsn, namasekolah, alamatsekolah, skpendirian, tanggalskpendirian, skoperasional, tanggalskoperasional, idkepalasekolah, logo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO konfigurasi (npsn, namasekolah, jenjang, alamatsekolah, skpendirian, tanggalskpendirian, skoperasional, tanggalskoperasional, idkepalasekolah, logo) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $params = [
             $data['npsn'] ?? null,
             $data['namasekolah'] ?? null,
+            $data['jenjang'] ?? null,
             $data['alamatsekolah'] ?? null,
             $data['skpendirian'] ?? null,
             !empty($data['tanggalskpendirian']) ? $data['tanggalskpendirian'] : null,
@@ -68,6 +69,7 @@ class Konfigurasi {
         $sql = "UPDATE konfigurasi SET 
                 npsn = ?,
                 namasekolah = ?,
+                jenjang = ?,
                 alamatsekolah = ?,
                 skpendirian = ?,
                 tanggalskpendirian = ?,
@@ -80,6 +82,7 @@ class Konfigurasi {
         $params = [
             $data['npsn'] ?? null,
             $data['namasekolah'] ?? null,
+            $data['jenjang'] ?? null,
             $data['alamatsekolah'] ?? null,
             $data['skpendirian'] ?? null,
             !empty($data['tanggalskpendirian']) ? $data['tanggalskpendirian'] : null,
@@ -97,7 +100,7 @@ class Konfigurasi {
      * Get list kepala sekolah untuk dropdown
      */
     public function getKepalaSekolahList() {
-        $sql = "SELECT id, namalengkap, email FROM users WHERE role = 'kepala_sekolah' AND status = 'aktif' ORDER BY namalengkap";
+        $sql = "SELECT id, namalengkap, email FROM users WHERE role IN ('kepalasekolah', 'kepala_sekolah', 'penilik_sekolah') AND status = 'aktif' ORDER BY namalengkap";
         return $this->db->fetchAll($sql);
     }
 }

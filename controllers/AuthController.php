@@ -27,7 +27,33 @@ class AuthController extends Controller {
             }
         }
         
-        $this->view('auth/login');
+        // Get konfigurasi logo for login form (same logic as header.php)
+        $konfigurasiLogo = null;
+        try {
+            $config = require __DIR__ . '/../config/app.php';
+            $baseUrl = rtrim($config['base_url'], '/');
+            if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
+                $baseUrl = '/';
+            }
+            
+            $konfigurasiModel = new Konfigurasi();
+            $konfigurasi = $konfigurasiModel->get();
+            if ($konfigurasi && !empty($konfigurasi['logo'])) {
+                // Use same path check as header.php
+                $logoFilePath = __DIR__ . '/../uploads/' . $konfigurasi['logo'];
+                if (file_exists($logoFilePath)) {
+                    $konfigurasiLogo = $baseUrl . $config['upload_url'] . $konfigurasi['logo'];
+                }
+            }
+        } catch (Exception $e) {
+            // Silently fail if Konfigurasi model not available
+        }
+        
+        $data = [
+            'konfigurasiLogo' => $konfigurasiLogo
+        ];
+        
+        $this->view('auth/login', $data);
     }
     
     public function logout() {

@@ -61,11 +61,10 @@ require __DIR__ . '/../layouts/header.php';
                                 <select class="form-select" id="role" name="role" required>
                                     <option value="">Pilih Role</option>
                                     <option value="admin">Admin</option>
-                                    <option value="tata_usaha" selected>Tata Usaha</option>
+                                    <option value="tatausaha" selected>Tata Usaha</option>
                                     <option value="guru">Guru</option>
-                                    <option value="kepala_sekolah">Kepala Sekolah</option>
-                                    <option value="penilik_sekolah">Penilik Sekolah</option>
-                                    <option value="wali_murid">Wali Murid</option>
+                                    <option value="kepalasekolah">Kepala Sekolah</option>
+                                    <option value="walimurid">Wali Murid</option>
                                 </select>
                             </div>
                             
@@ -91,7 +90,7 @@ require __DIR__ . '/../layouts/header.php';
                                 <select class="form-select" id="status" name="status" required>
                                     <option value="">Pilih Status</option>
                                     <option value="aktif" selected>Aktif</option>
-                                    <option value="non aktif">Non Aktif</option>
+                                    <option value="nonaktif">Non Aktif</option>
                                 </select>
                             </div>
                             

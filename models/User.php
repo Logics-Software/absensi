@@ -151,13 +151,18 @@ class User {
         $allowedFields = ['username', 'namalengkap', 'email', 'role', 'id_guru', 'picture', 'status'];
         
         foreach ($allowedFields as $field) {
-            if (isset($data[$field])) {
+            if (array_key_exists($field, $data)) {
                 $fields[] = "{$field} = ?";
-                $params[] = $data[$field];
+                // Handle null values for id_guru and picture
+                if (in_array($field, ['id_guru', 'picture']) && $data[$field] === null) {
+                    $params[] = null;
+                } else {
+                    $params[] = $data[$field];
+                }
             }
         }
         
-        if (isset($data['password'])) {
+        if (isset($data['password']) && !empty($data['password'])) {
             $fields[] = "password = ?";
             $params[] = $this->hashPassword($data['password']);
         }
@@ -169,7 +174,16 @@ class User {
         $params[] = $id;
         $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = ?";
         
-        return $this->db->query($sql, $params);
+        try {
+            $result = $this->db->query($sql, $params);
+            return $result !== false;
+        } catch (PDOException $e) {
+            error_log("User update PDO error: " . $e->getMessage() . " | SQL: " . $sql . " | Params: " . json_encode($params));
+            throw $e;
+        } catch (Exception $e) {
+            error_log("User update error: " . $e->getMessage() . " | SQL: " . $sql);
+            throw $e;
+        }
     }
     
     public function delete($id) {
