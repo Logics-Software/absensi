@@ -48,7 +48,7 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
                             
                             <div class="col-md-4 mb-3">
-                                <label for="noabsensi" class="form-label">No. Absensi</label>
+                                <label for="noabsensi" class="form-label">Pin Absensi</label>
                                 <input type="text" class="form-control" id="noabsensi" name="noabsensi" 
                                        value="<?= htmlspecialchars($mastersiswa['noabsensi'] ?? '') ?>" 
                                        placeholder="Nomor Absensi" maxlength="20">

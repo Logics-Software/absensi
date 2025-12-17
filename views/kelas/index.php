@@ -118,7 +118,7 @@ require __DIR__ . '/../layouts/header.php';
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($kelas['tahunajaran_nama'] ?? '-') ?></td>
-                                    <td><?= htmlspecialchars($kelas['kelas']) ?></td>
+                                    <td align="center"><?= htmlspecialchars($kelas['kelas']) ?></td>
                                     <td><?= htmlspecialchars($kelas['namakelas']) ?></td>
                                     <td><?= htmlspecialchars($kelas['jurusan_nama'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($kelas['guru_nama'] ?? '-') ?></td>

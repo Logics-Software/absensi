@@ -53,8 +53,8 @@ require __DIR__ . '/../layouts/header.php';
                     <div class="d-flex align-items-center">
                         <h4 class="mb-0">Daftar Hari Libur</h4>
                         <div class="ms-auto d-flex gap-2">
-                            <a href="/holiday?view=list" class="btn btn-sm <?= ($currentView === 'list') ? 'btn-primary' : 'btn-outline-secondary' ?>">List View</a>
-                            <a href="/holiday?view=calendar" class="btn btn-sm <?= ($currentView === 'calendar') ? 'btn-primary' : 'btn-outline-secondary' ?>">Calendar View</a>
+                            <a href="/holiday?view=list" class="btn btn-sm <?= ($currentView === 'list') ? 'btn-primary' : 'btn-secondary' ?>">List View</a>
+                            <a href="/holiday?view=calendar" class="btn btn-sm <?= ($currentView === 'calendar') ? 'btn-primary' : 'btn-secondary' ?>">Calendar View</a>
                             <a href="/holiday/create" class="btn btn-primary btn-sm">Tambah Hari Libur</a>
                         </div>
                     </div>

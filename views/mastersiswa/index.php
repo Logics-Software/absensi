@@ -106,7 +106,7 @@ require __DIR__ . '/../layouts/header.php';
                                 <tr>
                                     <th>Foto</th>
                                     <th>NISN</th>
-                                    <th>No. Absensi</th>
+                                    <th>PIN</th>
                                     <th class="th-sortable"><a href="<?= getSortUrl('namasiswa', $sortBy, $sortOrder, $search, $perPage, $filterTahunAjaran, $filterKelas) ?>">Nama Siswa</a></th>
                                     <th>Jenis Kelamin</th>
                                     <th>Tahun Ajaran</th>

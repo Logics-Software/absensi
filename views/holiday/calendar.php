@@ -86,7 +86,7 @@
                                     echo '<div class="calendar-holidays-list">';
                                     foreach ($dateHolidays as $holiday) {
                                         $holidayType = $holiday['is_national'] ? 'national' : 'local';
-                                        $recurringIcon = $holiday['is_recurring'] ? ' 🔄' : '';
+                                        $recurringIcon = $holiday['is_recurring'] ? ' ✨' : '';
                                         echo '<div class="calendar-holiday-item ' . $holidayType . '" data-holiday-id="' . $holiday['id'] . '">';
                                         echo '<span class="holiday-name">' . htmlspecialchars($holiday['name']) . $recurringIcon . '</span>';
                                         echo '<div class="holiday-actions">';
@@ -214,23 +214,35 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.7;
+    opacity: 0.8;
     transition: opacity 0.2s;
 }
 .btn-action:hover {
     opacity: 1;
 }
 .btn-edit {
-    color: #ffc107;
+    color: #000000;
+}
+.btn-edit img {
+    filter: brightness(0) saturate(100%);
 }
 .btn-edit:hover {
-    background-color: #fff3cd;
+    background-color: #f0f0f0;
+}
+.btn-edit:hover img {
+    filter: brightness(0) saturate(100%);
 }
 .btn-delete {
-    color: #dc3545;
+    color: #000000;
+}
+.btn-delete img {
+    filter: brightness(0) saturate(100%);
 }
 .btn-delete:hover {
-    background-color: #f8d7da;
+    background-color: #f0f0f0;
+}
+.btn-delete:hover img {
+    filter: brightness(0) saturate(100%);
 }
 .calendar-actions-empty {
     position: absolute;
