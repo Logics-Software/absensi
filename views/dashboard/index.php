@@ -27,76 +27,92 @@ require __DIR__ . '/../layouts/header.php';
             <h1 class="mb-0">Dashboard</h1>
         </div>
     </div>
-        
-    <?php if ($role === 'manajemen' || $role === 'admin'): ?>
-        <!-- Dashboard Manajemen / Admin -->
-        <div class="row g-3 mb-3">
-            <?php if ($role === 'admin'): ?>
-            <!-- Admin: Total User Log Hari Ini -->
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-blue">
-                            <?= icon('clock-rotate-left', '', 24) ?>
-                        </div>
-                        <h4 class="card-title text-muted mb-2">Total User Log Hari Ini</h4>
-                        <h3 class="mb-2"><?= number_format($stats['total_user_logs_today'] ?? 0) ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0">Login Log</p>
-                            <a href="/login-logs" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
+    
+    <!-- Dashboard Cards: Jumlah Siswa Aktif, Jumlah Guru Aktif -->
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-md-4">
+            <div class="card dashboard-stats-card">
+                <div class="card-body">
+                    <div class="dashboard-stats-card-icon icon-blue">
+                        <?= icon('users', '', 24) ?>
                     </div>
-                </div>
-            </div>
-            <?php else: ?>
-            <!-- Manajemen: Total Order Hari Ini -->
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-blue">
-                            <?= icon('file-invoice', '', 24) ?>
-                        </div>
-                        <h4 class="card-title text-muted mb-2">Total Order Hari Ini</h4>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_orders_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_orders'] ?? 0) ?> Order</p>
-                            <a href="/orders" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-green">
-                            <?= icon('file-invoice-dollar', '', 24) ?>
-                        </div>
-                        <h5 class="card-title text-muted mb-2">Total Penjualan Hari Ini</h5>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_penjualan_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_penjualan'] ?? 0) ?> Faktur</p>
-                            <a href="/penjualan" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-purple">
-                            <?= icon('money-bill-transfer', '', 24) ?>
-                        </div>
-                        <h5 class="card-title text-muted mb-2">Total Inkaso Hari Ini</h5>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_penerimaan_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_penerimaan'] ?? 0) ?> Inkaso</p>
-                            <a href="/penerimaan" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
+                    <h4 class="card-title text-muted mb-2">Jumlah Siswa Aktif</h4>
+                    <h3 class="mb-2"><?= number_format($jumlahSiswaAktif ?? 0) ?></h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">
+                            <?php if (!empty($activeTahunAjaran)): ?>
+                                Tahun Ajaran: <?= htmlspecialchars($activeTahunAjaran['tahunajaran'] ?? '-') ?>
+                            <?php else: ?>
+                                Tidak ada tahun ajaran aktif
+                            <?php endif; ?>
+                        </p>
+                        <a href="/mastersiswa" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <div class="col-12 col-md-4">
+            <div class="card dashboard-stats-card">
+                <div class="card-body">
+                    <div class="dashboard-stats-card-icon icon-green">
+                        <?= icon('user-gear', '', 24) ?>
+                    </div>
+                    <h4 class="card-title text-muted mb-2">Jumlah Guru Aktif</h4>
+                    <h3 class="mb-2"><?= number_format($jumlahGuruAktif ?? 0) ?></h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">Guru Aktif</p>
+                        <a href="/masterguru" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-md-4">
+            <div class="card dashboard-stats-card">
+                <div class="card-body">
+                    <div class="dashboard-stats-card-icon icon-purple">
+                        <?= icon('table-list', '', 24) ?>
+                    </div>
+                    <h4 class="card-title text-muted mb-2">Tahun Ajaran Aktif</h4>
+                    <h3 class="mb-2"><?= !empty($activeTahunAjaran) ? htmlspecialchars($activeTahunAjaran['tahunajaran'] ?? '-') : '-' ?></h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">
+                            <?php if (!empty($activeTahunAjaran)): ?>
+                                <?php 
+                                $tanggalAwal = !empty($activeTahunAjaran['tanggalawal']) ? date('d/m/Y', strtotime($activeTahunAjaran['tanggalawal'])) : '-';
+                                $tanggalAkhir = !empty($activeTahunAjaran['tanggalakhir']) ? date('d/m/Y', strtotime($activeTahunAjaran['tanggalakhir'])) : '-';
+                                ?>
+                                <?= $tanggalAwal ?> - <?= $tanggalAkhir ?>
+                            <?php else: ?>
+                                Belum ada tahun ajaran aktif
+                            <?php endif; ?>
+                        </p>
+                        <a href="/tahunajaran" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Grafik Siswa Per Tahun Ajaran -->
+    <?php if (!empty($chartData)): ?>
+    <div class="row g-3 mb-3">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header dashboard-card-header">
+                    <h5 class="mb-0">Grafik Jumlah Siswa Per Tahun Ajaran (5 Tahun Terakhir)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="siswaChart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+        
+    <?php if ($role === 'manajemen' || $role === 'admin'): ?>
+        <!-- Dashboard Manajemen / Admin -->
 
         <!-- Chart Penjualan dan Inkaso Per Bulan YTD (All Sales) -->
         <?php if (!empty($stats['monthly_sales']) || !empty($stats['monthly_inkaso'])): ?>
@@ -228,53 +244,6 @@ require __DIR__ . '/../layouts/header.php';
 
     <?php if ($role === 'operator'): ?>
         <!-- Dashboard Operator -->
-        <div class="row g-3 mb-3">
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-blue">
-                            <?= icon('file-invoice', '', 24) ?>
-                        </div>
-                        <h4 class="card-title text-muted mb-2">Total Order Hari Ini</h4>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_orders_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_orders'] ?? 0) ?> Order</p>
-                            <a href="/orders" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-green">
-                            <?= icon('file-invoice-dollar', '', 24) ?>
-                        </div>
-                        <h5 class="card-title text-muted mb-2">Total Penjualan Hari Ini</h5>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_penjualan_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_penjualan'] ?? 0) ?> Faktur</p>
-                            <a href="/penjualan" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card dashboard-stats-card">
-                    <div class="card-body">
-                        <div class="dashboard-stats-card-icon icon-purple">
-                            <?= icon('money-bill-transfer', '', 24) ?>
-                        </div>
-                        <h5 class="card-title text-muted mb-2">Total Inkaso Hari Ini</h5>
-                        <h3 class="mb-2">Rp <?= number_format($stats['all_penerimaan_total'] ?? 0, 0, ',', '.') ?></h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0"><?= number_format($stats['total_penerimaan'] ?? 0) ?> Inkaso</p>
-                            <a href="/penerimaan" class="btn btn-sm btn-outline-primary">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Harga Barang Baru -->
         <?php if (!empty($stats['price_changes'])): ?>
@@ -599,6 +568,107 @@ require __DIR__ . '/../layouts/header.php';
         
     <?php endif; ?>
 </div>
+
+<?php if (!empty($chartData)): ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartData = <?= json_encode($chartData) ?>;
+    
+    // Prepare data for chart
+    const labels = [];
+    const data = [];
+    
+    // Reverse to show oldest to newest
+    chartData.reverse().forEach(item => {
+        labels.push(item.tahun);
+        data.push(item.jumlah);
+    });
+    
+    // Create chart
+    const ctx = document.getElementById('siswaChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Siswa',
+                    data: data,
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgb(59, 130, 246)',
+                    borderWidth: 2,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 3,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Jumlah Siswa: ' + new Intl.NumberFormat('id-ID').format(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            color: '#6b7280'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                size: 12
+                            },
+                            color: '#6b7280',
+                            callback: function(value) {
+                                return new Intl.NumberFormat('id-ID').format(value);
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+});
+</script>
+<?php endif; ?>
 
 <?php if (($role === 'sales' || $role === 'manajemen' || $role === 'admin') && !empty($stats['monthly_sales'])): ?>
 <?php
