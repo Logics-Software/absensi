@@ -169,6 +169,7 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                                 <a href="/mastersiswa" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/mastersiswa') !== false ? 'active' : '' ?>">Data Siswa</a>
                             </div>
                         </div>
+                        <a href="/absensisiswa" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false ? 'active' : '' ?>">Absensi Siswa</a>
                         <?php endif; ?>
                         
                         <a href="/messages" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/messages') !== false ? 'active' : '' ?>">Pesan</a>                        

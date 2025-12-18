@@ -1,0 +1,340 @@
+<?php
+$title = 'Tambah Absensi Siswa';
+$config = require __DIR__ . '/../../config/app.php';
+$baseUrl = rtrim($config['base_url'], '/');
+if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
+    $baseUrl = '/';
+}
+// Add Choices.js CSS and JS
+$additionalStyles = ['https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css'];
+$additionalScripts = ['https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js'];
+require __DIR__ . '/../layouts/header.php';
+?>
+
+<div class="container">
+    <div class="breadcrumb-item">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/absensisiswa">Absensi Siswa</a></li>
+                    <li class="breadcrumb-item active">Tambah Absensi</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="mb-0">Tambah Data Absensi Siswa</h4>
+                    </div>
+                </div>
+                <form method="POST" action="/absensisiswa/create" id="formAbsensi">
+                <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nisn" class="form-label">NISN <span class="text-danger">*</span></label>
+                                <select class="form-select" id="nisn" name="nisn" required>
+                                    <option value="">Pilih Siswa</option>
+                                    <?php foreach ($studentsList as $student): ?>
+                                        <option value="<?= htmlspecialchars($student['nisn']) ?>">
+                                            <?= htmlspecialchars($student['nisn']) ?> - <?= htmlspecialchars($student['namasiswa']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="tanggalabsen" class="form-label">Tanggal Absen <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="tanggalabsen" name="tanggalabsen" value="<?= date('Y-m-d') ?>" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jammasuk" class="form-label">Jam Masuk <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control time-picker" id="jammasuk" name="jammasuk" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
+                                    <button type="button" class="btn btn-outline-secondary" id="jammasuk-btn" title="Pilih Waktu">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback" id="jammasuk-error"></div>
+                                <small class="text-muted">Format: HH:MM (00:00 - 23:59)</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="jamkeluar" class="form-label">Jam Pulang <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control time-picker" id="jamkeluar" name="jamkeluar" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
+                                    <button type="button" class="btn btn-outline-secondary" id="jamkeluar-btn" title="Pilih Waktu">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback" id="jamkeluar-error"></div>
+                                <small class="text-muted">Format: HH:MM (00:00 - 23:59)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="hadir" selected>Hadir</option>
+                                    <option value="alpha">Alpha</option>
+                                    <option value="ijin">Ijin</option>
+                                    <option value="sakit">Sakit</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Masukkan keterangan (opsional)" maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <a href="/absensisiswa" class="btn btn-secondary">Batal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.time-picker {
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 1rem;
+    text-align: center;
+}
+.input-group .btn {
+    border-left: 0;
+}
+.input-group .form-control:focus + .btn {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Choices.js for NISN select
+    function initChoices() {
+        const nisnSelect = document.getElementById('nisn');
+        if (!nisnSelect) return;
+        
+        // Wait for Choices.js to load
+        if (typeof Choices === 'undefined') {
+            setTimeout(initChoices, 100);
+            return;
+        }
+        
+        // Destroy existing instance if any
+        if (nisnSelect.choicesInstance) {
+            nisnSelect.choicesInstance.destroy();
+        }
+        
+        const nisnChoice = new Choices(nisnSelect, {
+            searchEnabled: true,
+            searchChoices: true,
+            itemSelectText: '',
+            noResultsText: 'Tidak ada siswa yang ditemukan',
+            noChoicesText: 'Tidak ada siswa tersedia',
+            placeholder: true,
+            placeholderValue: 'Pilih Siswa',
+            searchPlaceholderValue: 'Cari NISN atau nama siswa...',
+            shouldSort: true,
+            shouldSortItems: true,
+            fuseOptions: {
+                threshold: 0.3,
+                distance: 100,
+                minMatchCharLength: 1
+            }
+        });
+        
+        // Store instance for later use
+        nisnSelect.choicesInstance = nisnChoice;
+    }
+    
+    // Initialize Choices.js
+    initChoices();
+    
+    // Time picker enhancement
+    const jamMasukInput = document.getElementById('jammasuk');
+    const jamKeluarInput = document.getElementById('jamkeluar');
+    const jamMasukBtn = document.getElementById('jammasuk-btn');
+    const jamKeluarBtn = document.getElementById('jamkeluar-btn');
+    
+    // Convert 12-hour to 24-hour format
+    function convertTo24Hour(time12h) {
+        if (!time12h) return '';
+        // Check if it's already 24-hour format
+        const time24Pattern = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+        if (time24Pattern.test(time12h)) {
+            return time12h;
+        }
+        // Try to parse 12-hour format
+        const parts = time12h.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (parts) {
+            let hours = parseInt(parts[1], 10);
+            const minutes = parts[2];
+            const ampm = parts[3].toUpperCase();
+            
+            if (ampm === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (ampm === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            return String(hours).padStart(2, '0') + ':' + minutes;
+        }
+        return time12h;
+    }
+    
+    // Format time input to HH:MM (remove seconds) - ensure 24 hour format (00-23)
+    function formatTimeInput(input) {
+        if (input && input.value) {
+            // Convert from 12-hour to 24-hour if needed
+            let timeValue = convertTo24Hour(input.value);
+            
+            // If value includes seconds, remove them
+            if (timeValue.length > 5) {
+                timeValue = timeValue.substring(0, 5);
+            }
+            
+            // Ensure format is HH:MM (24 hour: 00-23)
+            const timePattern = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+            if (!timePattern.test(timeValue)) {
+                // If invalid, try to fix it
+                const parts = timeValue.split(':');
+                if (parts.length === 2) {
+                    let hours = parseInt(parts[0], 10);
+                    let minutes = parseInt(parts[1], 10);
+                    // Ensure hours are in 24-hour format (00-23)
+                    if (isNaN(hours) || hours < 0) hours = 0;
+                    if (hours > 23) hours = 23;
+                    // Ensure minutes are 00-59
+                    if (isNaN(minutes) || minutes < 0) minutes = 0;
+                    if (minutes > 59) minutes = 59;
+                    // Format with leading zeros (00-23 for hours, 00-59 for minutes)
+                    timeValue = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+                }
+            }
+            
+            // Set the value back
+            input.value = timeValue;
+        }
+    }
+    
+    // Apply time mask to inputs
+    if (jamMasukInput) {
+        applyTimeMask(jamMasukInput);
+        jamMasukInput.addEventListener('input', function() {
+            formatTimeInput(this);
+        });
+        jamMasukInput.addEventListener('change', function() {
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+        jamMasukInput.addEventListener('blur', function() {
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+        
+        // Double click to set current time
+        jamMasukInput.addEventListener('dblclick', function() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            this.value = hours + ':' + minutes;
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+    }
+    
+    if (jamKeluarInput) {
+        applyTimeMask(jamKeluarInput);
+        jamKeluarInput.addEventListener('input', function() {
+            formatTimeInput(this);
+        });
+        jamKeluarInput.addEventListener('change', function() {
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+        jamKeluarInput.addEventListener('blur', function() {
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+        
+        // Double click to set current time
+        jamKeluarInput.addEventListener('dblclick', function() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            this.value = hours + ':' + minutes;
+            formatTimeInput(this);
+            validateTimeInput(this);
+        });
+    }
+    
+    // Button click to focus input
+    if (jamMasukBtn && jamMasukInput) {
+        jamMasukBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            jamMasukInput.focus();
+        });
+    }
+    
+    if (jamKeluarBtn && jamKeluarInput) {
+        jamKeluarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            jamKeluarInput.focus();
+        });
+    }
+    
+    // Form validation before submit
+    const absensiForm = document.querySelector('form');
+    if (absensiForm) {
+        absensiForm.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validate jam masuk
+            if (jamMasukInput) {
+                if (!validateTimeInput(jamMasukInput)) {
+                    isValid = false;
+                    jamMasukInput.focus();
+                }
+            }
+            
+            // Validate jam keluar
+            if (jamKeluarInput && isValid) {
+                if (!validateTimeInput(jamKeluarInput)) {
+                    isValid = false;
+                    jamKeluarInput.focus();
+                }
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    }
+});
+</script>
+
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
+

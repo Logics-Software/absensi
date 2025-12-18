@@ -193,6 +193,14 @@ $router->post('/mastersiswa/edit/{id}', 'MastersiswaController', 'edit');
 $router->get('/mastersiswa/delete/{id}', 'MastersiswaController', 'delete');
 $router->get('/mastersiswa/api/getkelas', 'MastersiswaController', 'apiGetKelas');
 
+// Absensi Siswa routes (admin only)
+$router->get('/absensisiswa', 'AbsensiSiswaController', 'index');
+$router->get('/absensisiswa/create', 'AbsensiSiswaController', 'create');
+$router->post('/absensisiswa/create', 'AbsensiSiswaController', 'create');
+$router->get('/absensisiswa/edit/{id}', 'AbsensiSiswaController', 'edit');
+$router->post('/absensisiswa/edit/{id}', 'AbsensiSiswaController', 'edit');
+$router->get('/absensisiswa/delete/{id}', 'AbsensiSiswaController', 'delete');
+
 // Holiday routes (admin only)
 $router->get('/holiday', 'HolidayController', 'index');
 $router->get('/holiday/create', 'HolidayController', 'create');
