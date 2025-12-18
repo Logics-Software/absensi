@@ -7,7 +7,7 @@ class DashboardController extends Controller {
         $role = $user['role'] ?? '';
         
         // Load models
-        require_once __DIR__ . '/../models/MasterSiswa.php';
+        require_once __DIR__ . '/../models/Mastersiswa.php';
         require_once __DIR__ . '/../models/MasterGuru.php';
         require_once __DIR__ . '/../models/TahunAjaran.php';
         
