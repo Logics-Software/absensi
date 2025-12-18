@@ -9,6 +9,10 @@ if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
 $user = $user ?? Auth::user();
 $role = $role ?? ($user['role'] ?? '');
 $stats = $stats ?? [];
+$jumlahSiswaAktif = $jumlahSiswaAktif ?? 0;
+$jumlahGuruAktif = $jumlahGuruAktif ?? 0;
+$activeTahunAjaran = $activeTahunAjaran ?? null;
+$chartData = $chartData ?? [];
 
 // Load sticky column CSS and JS if needed (for price changes, barang datang, and overdue invoices tables)
 if (($role === 'sales' || $role === 'manajemen' || $role === 'admin' || $role === 'operator') && (!empty($stats['price_changes']) || !empty($stats['barang_datang']) || !empty($stats['overdue_invoices']))) {
