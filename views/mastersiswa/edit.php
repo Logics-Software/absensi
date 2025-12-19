@@ -98,9 +98,30 @@ require __DIR__ . '/../layouts/header.php';
                             
                             <div class="col-md-6 mb-3">
                                 <label for="nomorhp" class="form-label">Nomor HP</label>
-                                <input type="text" class="form-control" id="nomorhp" name="nomorhp" 
-                                       value="<?= htmlspecialchars($mastersiswa['nomorhp'] ?? '') ?>" 
-                                       placeholder="+62xxxxxxxxxx" maxlength="50">
+                                <div class="phone-input-wrapper">
+                                    <div class="phone-input-container">
+                                        <div class="country-code-selector" id="countryCodeSelector_nomorhp">
+                                            <span class="country-flag">🇮🇩</span>
+                                            <span class="country-code">62</span>
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-icon">
+                                                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                        <?php 
+                                        $nomorhp = $mastersiswa['nomorhp'] ?? '';
+                                        $nomorhpValue = '';
+                                        if (!empty($nomorhp)) {
+                                            // Remove country code if exists
+                                            $nomorhpValue = preg_replace('/^\+?62\s?/', '', $nomorhp);
+                                            $nomorhpValue = preg_replace('/[^0-9]/', '', $nomorhpValue);
+                                        }
+                                        ?>
+                                        <input type="text" class="form-control phone-number-input" id="nomorhp" name="nomorhp" 
+                                               value="<?= htmlspecialchars($nomorhpValue) ?>" 
+                                               placeholder="8971234567" maxlength="15" inputmode="numeric">
+                                        <input type="hidden" id="nomorhp_full" name="nomorhp_full" value="<?= htmlspecialchars($nomorhp) ?>">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -214,9 +235,30 @@ require __DIR__ . '/../layouts/header.php';
                             
                             <div class="col-md-4 mb-3">
                                 <label for="nomorhpwali" class="form-label">Nomor HP Wali</label>
-                                <input type="text" class="form-control" id="nomorhpwali" name="nomorhpwali" 
-                                       value="<?= htmlspecialchars($mastersiswa['nomorhpwali'] ?? '') ?>" 
-                                       placeholder="+62xxxxxxxxxx" maxlength="50">
+                                <div class="phone-input-wrapper">
+                                    <div class="phone-input-container">
+                                        <div class="country-code-selector" id="countryCodeSelector_nomorhpwali">
+                                            <span class="country-flag">🇮🇩</span>
+                                            <span class="country-code">62</span>
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-icon">
+                                                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                        <?php 
+                                        $nomorhpwali = $mastersiswa['nomorhpwali'] ?? '';
+                                        $nomorhpwaliValue = '';
+                                        if (!empty($nomorhpwali)) {
+                                            // Remove country code if exists
+                                            $nomorhpwaliValue = preg_replace('/^\+?62\s?/', '', $nomorhpwali);
+                                            $nomorhpwaliValue = preg_replace('/[^0-9]/', '', $nomorhpwaliValue);
+                                        }
+                                        ?>
+                                        <input type="text" class="form-control phone-number-input" id="nomorhpwali" name="nomorhpwali" 
+                                               value="<?= htmlspecialchars($nomorhpwaliValue) ?>" 
+                                               placeholder="8971234567" maxlength="15" inputmode="numeric">
+                                        <input type="hidden" id="nomorhpwali_full" name="nomorhpwali_full" value="<?= htmlspecialchars($nomorhpwali) ?>">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -616,35 +658,52 @@ document.addEventListener('DOMContentLoaded', function() {
         loadKelas();
     }
     
-    // Phone number formatting for siswa
-    const nomorHpInput = document.getElementById('nomorhp');
-    if (nomorHpInput) {
-        nomorHpInput.addEventListener('blur', function() {
-            let value = this.value.replace(/[^0-9]/g, ''); // Remove non-digits
+    // Phone number input handler
+    function initPhoneInput(inputId, hiddenId) {
+        const phoneInput = document.getElementById(inputId);
+        const hiddenInput = document.getElementById(hiddenId);
+        
+        if (!phoneInput || !hiddenInput) return;
+        
+        // Only allow numbers
+        phoneInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+        // Format and update hidden field on blur
+        phoneInput.addEventListener('blur', function() {
+            let value = this.value.replace(/[^0-9]/g, '');
             if (value.startsWith('0')) {
                 value = value.substring(1); // Remove leading zero
             }
-            if (!value.startsWith('62')) {
-                value = '62' + value; // Add 62 prefix
+            // Update hidden field with full format (+62xxxxxxxxxx)
+            if (value) {
+                hiddenInput.value = '+62' + value;
+            } else {
+                hiddenInput.value = '';
             }
-            this.value = '+' + value;
         });
+        
+        // Update hidden field on form submit
+        const form = phoneInput.closest('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                let value = phoneInput.value.replace(/[^0-9]/g, '');
+                if (value.startsWith('0')) {
+                    value = value.substring(1);
+                }
+                if (value) {
+                    hiddenInput.value = '+62' + value;
+                } else {
+                    hiddenInput.value = '';
+                }
+            });
+        }
     }
     
-    // Phone number formatting for wali
-    const nomorHpWaliInput = document.getElementById('nomorhpwali');
-    if (nomorHpWaliInput) {
-        nomorHpWaliInput.addEventListener('blur', function() {
-            let value = this.value.replace(/[^0-9]/g, ''); // Remove non-digits
-            if (value.startsWith('0')) {
-                value = value.substring(1); // Remove leading zero
-            }
-            if (!value.startsWith('62')) {
-                value = '62' + value; // Add 62 prefix
-            }
-            this.value = '+' + value;
-        });
-    }
+    // Initialize phone inputs
+    initPhoneInput('nomorhp', 'nomorhp_full');
+    initPhoneInput('nomorhpwali', 'nomorhpwali_full');
 });
 </script>
 

@@ -65,7 +65,7 @@ class MasterGuruController extends Controller {
                 'idkecamatan' => !empty($_POST['idkecamatan']) ? (int)$_POST['idkecamatan'] : null,
                 'idkelurahan' => !empty($_POST['idkelurahan']) ? (int)$_POST['idkelurahan'] : null,
                 'kodepos' => $_POST['kodepos'] ?? null,
-                'nomorhp' => !empty($_POST['nomorhp']) ? $_POST['nomorhp'] : null,
+                'nomorhp' => !empty($_POST['nomorhp_full']) ? trim($_POST['nomorhp_full']) : (!empty($_POST['nomorhp']) ? '+62' . trim($_POST['nomorhp']) : null),
                 'email' => $_POST['email'] ?? null,
                 'foto' => null,
                 'iduser' => !empty($_POST['iduser']) ? (int)$_POST['iduser'] : null,
@@ -158,7 +158,7 @@ class MasterGuruController extends Controller {
                 'idkecamatan' => !empty($_POST['idkecamatan']) ? (int)$_POST['idkecamatan'] : null,
                 'idkelurahan' => !empty($_POST['idkelurahan']) ? (int)$_POST['idkelurahan'] : null,
                 'kodepos' => $_POST['kodepos'] ?? null,
-                'nomorhp' => !empty($_POST['nomorhp']) ? $_POST['nomorhp'] : null,
+                'nomorhp' => !empty($_POST['nomorhp_full']) ? trim($_POST['nomorhp_full']) : (!empty($_POST['nomorhp']) ? '+62' . trim($_POST['nomorhp']) : null),
                 'email' => $_POST['email'] ?? null,
                 'foto' => $masterGuru['foto'] ?? null, // Keep existing foto if not uploaded
                 'iduser' => !empty($_POST['iduser']) ? (int)$_POST['iduser'] : null,
