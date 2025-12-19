@@ -1,5 +1,5 @@
 <?php
-$title = 'Absensi Siswa';
+$title = 'Absensi Guru';
 $config = require __DIR__ . '/../../config/app.php';
 $baseUrl = rtrim($config['base_url'], '/');
 if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
@@ -8,7 +8,7 @@ if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
 
 // Helper function to generate sort URL
 if (!function_exists('getSortUrl')) {
-    function getSortUrl($column, $currentSortBy, $currentSortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas) {
+    function getSortUrl($column, $currentSortBy, $currentSortOrder, $search, $perPage, $period, $dateFrom, $dateTo) {
         $newSortOrder = ($currentSortBy == $column && $currentSortOrder == 'ASC') ? 'DESC' : 'ASC';
         $params = [
             'page' => 1,
@@ -26,10 +26,7 @@ if (!function_exists('getSortUrl')) {
         if ($dateTo !== null && $dateTo !== '') {
             $params['date_to'] = $dateTo;
         }
-        if ($filterKelas !== null && $filterKelas > 0) {
-            $params['kelas'] = $filterKelas;
-        }
-        return '/absensisiswa?' . http_build_query($params);
+        return '/absensiguru?' . http_build_query($params);
     }
 }
 
@@ -42,7 +39,7 @@ require __DIR__ . '/../layouts/header.php';
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Absensi Siswa</li>
+                    <li class="breadcrumb-item active">Absensi Guru</li>
                 </ol>
             </nav>
         </div>
@@ -53,27 +50,17 @@ require __DIR__ . '/../layouts/header.php';
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="mb-0">Daftar Absensi Siswa</h4>
-                        <a href="/absensisiswa/create" class="btn btn-primary btn-sm ms-auto">Tambah Absensi</a>
+                        <h4 class="mb-0">Daftar Absensi Guru</h4>
+                        <a href="/absensiguru/create" class="btn btn-primary btn-sm ms-auto">Tambah Absensi</a>
                     </div>
                 </div>
                 
                 <div class="card-body">
                     <div class="row mb-3">
-                        <form method="GET" action="/absensisiswa" id="searchForm">
+                        <form method="GET" action="/absensiguru" id="searchForm">
                             <div class="row g-2 align-items-end">
-                                <div class="col-12 col-md-2">
-                                    <input type="text" class="form-control" name="search" placeholder="Cari NISN, nama siswa, keterangan..." value="<?= htmlspecialchars($search) ?>">
-                                </div>
-                                <div class="col-12 col-md-2">
-                                    <select name="kelas" id="kelas" class="form-select" onchange="this.form.submit();">
-                                        <option value="">Semua Kelas</option>
-                                        <?php foreach ($kelasList ?? [] as $kelas): ?>
-                                        <option value="<?= $kelas['idkelas'] ?>" <?= (isset($filterKelas) && $filterKelas == $kelas['idkelas']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($kelas['namakelas']) ?>
-                                        </option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control" name="search" placeholder="Cari NIP, nama guru, keterangan..." value="<?= htmlspecialchars($search) ?>">
                                 </div>
                                 <div class="col-12 col-md-2">
                                     <select name="period" id="period" class="form-select" onchange="toggleCustomDate(); this.form.submit();">
@@ -103,7 +90,7 @@ require __DIR__ . '/../layouts/header.php';
                                     <button type="submit" class="btn btn-filter btn-secondary w-100">Filter</button>
                                 </div>
                                 <div class="col-4 col-md-1">
-                                    <a href="/absensisiswa?page=1&per_page=10&sort_by=<?= htmlspecialchars($sortBy) ?>&sort_order=<?= htmlspecialchars($sortOrder) ?>" class="btn btn-filter btn-outline-secondary w-100">Reset</a>
+                                    <a href="/absensiguru?page=1&per_page=10&sort_by=<?= htmlspecialchars($sortBy) ?>&sort_order=<?= htmlspecialchars($sortOrder) ?>" class="btn btn-filter btn-outline-secondary w-100">Reset</a>
                                 </div>
                             </div>
                             <input type="hidden" name="page" value="1">
@@ -117,13 +104,13 @@ require __DIR__ . '/../layouts/header.php';
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('nisn', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas ?? null) ?>">NISN</a></th>
-                                    <th>Nama Siswa</th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('tanggalabsen', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas ?? null) ?>">Tanggal Absen</a></th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('jammasuk', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas ?? null) ?>">Jam Masuk</a></th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('jamkeluar', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas ?? null) ?>">Jam Pulang</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('nip', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">NIP</a></th>
+                                    <th>Nama Guru</th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('tanggalabsen', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Tanggal Absen</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('jammasuk', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Jam Masuk</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('jamkeluar', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Jam Pulang</a></th>
                                     <th>Durasi</th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('status', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo, $filterKelas ?? null) ?>">Status</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('status', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Status</a></th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -140,8 +127,8 @@ require __DIR__ . '/../layouts/header.php';
                                 ?>
                                 <tr>
                                     <td align="center"><?= $no++ ?></td>
-                                    <td><?= htmlspecialchars($absensi['nisn'] ?? '-') ?></td>
-                                    <td><?= htmlspecialchars($absensi['namasiswa'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($absensi['nip'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($absensi['namaguru'] ?? '-') ?></td>
                                     <td><?= !empty($absensi['tanggalabsen']) ? date('d/m/Y', strtotime($absensi['tanggalabsen'])) : '-' ?></td>
                                     <td><?= !empty($absensi['jammasuk']) ? date('H:i', strtotime($absensi['jammasuk'])) : '-' ?></td>
                                     <td><?= !empty($absensi['jamkeluar']) ? date('H:i', strtotime($absensi['jamkeluar'])) : '-' ?></td>
@@ -176,10 +163,10 @@ require __DIR__ . '/../layouts/header.php';
                                     <td><?= htmlspecialchars($absensi['keterangan'] ?? '-') ?></td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <a href="/absensisiswa/edit/<?= $absensi['id'] ?>" class="btn btn-sm btn-warning" title="Edit">
+                                            <a href="/absensiguru/edit/<?= $absensi['id'] ?>" class="btn btn-sm btn-warning" title="Edit">
                                                 <?= icon('pen-to-square', 'me-0 mb-1', 16) ?>
                                             </a>
-                                            <a href="/absensisiswa/delete/<?= $absensi['id'] ?>" class="btn btn-sm btn-danger" onclick="event.preventDefault(); confirmDelete('Apakah Anda yakin ingin menghapus absensi ini?', this.href); return false;" title="Hapus">
+                                            <a href="/absensiguru/delete/<?= $absensi['id'] ?>" class="btn btn-sm btn-danger" onclick="event.preventDefault(); confirmDelete('Apakah Anda yakin ingin menghapus absensi ini?', this.href); return false;" title="Hapus">
                                                 <?= icon('trash-can', 'me-0 mb-1', 16) ?>
                                             </a>
                                         </div>
@@ -200,9 +187,8 @@ require __DIR__ . '/../layouts/header.php';
                     $page = $currentPage;
                     $totalPages = (int)$totalPages;
                     $perPage = (int)$perPage;
-                    $filterKelas = isset($filterKelas) ? $filterKelas : null;
                     
-                    $buildLink = function ($p) use ($perPage, $search, $sortBy, $sortOrder, $period, $dateFrom, $dateTo, $filterKelas) {
+                    $buildLink = function ($p) use ($perPage, $search, $sortBy, $sortOrder, $period, $dateFrom, $dateTo) {
                         $params = [
                             'page' => $p,
                             'per_page' => $perPage,
@@ -219,9 +205,6 @@ require __DIR__ . '/../layouts/header.php';
                         if ($dateTo !== null && $dateTo !== '') {
                             $params['date_to'] = $dateTo;
                         }
-                        if ($filterKelas !== null && $filterKelas > 0) {
-                            $params['kelas'] = $filterKelas;
-                        }
                         return '?' . http_build_query($params);
                     };
                     $maxLinks = 3;
@@ -236,28 +219,28 @@ require __DIR__ . '/../layouts/header.php';
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
                                 <?php $prevPage = (int)max(1, (int)$page - 1); ?>
-                                <a class="page-link" href="/absensisiswa<?php echo $buildLink($prevPage); ?>">Previous</a>
+                                <a class="page-link" href="/absensiguru<?php echo $buildLink($prevPage); ?>">Previous</a>
                             </li>
                             <?php
                             if ($start > 1) {
-                                echo '<li class="page-item"><a class="page-link" href="/absensisiswa' . $buildLink(1) . '">1</a></li>';
+                                echo '<li class="page-item"><a class="page-link" href="/absensiguru' . $buildLink(1) . '">1</a></li>';
                                 if ($start > 2) {
                                     echo '<li class="page-item disabled"><span class="page-link">&hellip;</span></li>';
                                 }
                             }
                             for ($i = $start; $i <= $end; $i++) {
-                                echo '<li class="page-item ' . ($page == $i ? 'active' : '') . '"><a class="page-link" href="/absensisiswa' . $buildLink($i) . '">' . $i . '</a></li>';
+                                echo '<li class="page-item ' . ($page == $i ? 'active' : '') . '"><a class="page-link" href="/absensiguru' . $buildLink($i) . '">' . $i . '</a></li>';
                             }
                             if ($end < $totalPages) {
                                 if ($end < $totalPages - 1) {
                                     echo '<li class="page-item disabled"><span class="page-link">&hellip;</span></li>';
                                 }
-                                echo '<li class="page-item"><a class="page-link" href="/absensisiswa' . $buildLink($totalPages) . '">' . $totalPages . '</a></li>';
+                                echo '<li class="page-item"><a class="page-link" href="/absensiguru' . $buildLink($totalPages) . '">' . $totalPages . '</a></li>';
                             }
                             ?>
                             <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
                                 <?php $nextPage = $page + 1; if ($nextPage > $totalPages) $nextPage = $totalPages; $nextPage = (int)$nextPage; ?>
-                                <a class="page-link" href="/absensisiswa<?php echo $buildLink($nextPage); ?>">Next</a>
+                                <a class="page-link" href="/absensiguru<?php echo $buildLink($nextPage); ?>">Next</a>
                             </li>
                         </ul>
                     </nav>

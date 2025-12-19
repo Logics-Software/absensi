@@ -154,7 +154,9 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                                 <a href="/tahunajaran" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/tahunajaran') !== false ? 'active' : '' ?>">Tahun Ajaran</a>
                                 <a href="/jurusan" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/jurusan') !== false ? 'active' : '' ?>">Jurusan</a>
                                 <a href="/kelas" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/kelas') !== false ? 'active' : '' ?>">Kelas</a>
+                                <a href="/settingjambelajar" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/settingjambelajar') !== false ? 'active' : '' ?>">Jam Belajar</a>
                                 <a href="/holiday" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/holiday') !== false ? 'active' : '' ?>">Hari Libur</a>
+                                <a href="/kalenderakademik" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/kalenderakademik') !== false ? 'active' : '' ?>">Kalender Akademik</a>
                             </div>
                         </div>
                         <div class="nav-dropdown">
@@ -169,7 +171,18 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                                 <a href="/mastersiswa" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/mastersiswa') !== false ? 'active' : '' ?>">Data Siswa</a>
                             </div>
                         </div>
-                        <a href="/absensisiswa" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false ? 'active' : '' ?>">Absensi Siswa</a>
+                        <div class="nav-dropdown">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/absensiguru') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                                Absensi
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
+                                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                                <a href="/absensisiswa" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false ? 'active' : '' ?>">Absensi Siswa</a>
+                                <a href="/absensiguru" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensiguru') !== false ? 'active' : '' ?>">Absensi Guru</a>
+                            </div>
+                        </div>
                         <?php endif; ?>
                         
                         <a href="/messages" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/messages') !== false ? 'active' : '' ?>">Pesan</a>                        

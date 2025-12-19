@@ -1,5 +1,5 @@
 <?php
-$title = 'Edit Absensi Siswa';
+$title = 'Tambah Absensi Guru';
 $config = require __DIR__ . '/../../config/app.php';
 $baseUrl = rtrim($config['base_url'], '/');
 if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
@@ -17,8 +17,8 @@ require __DIR__ . '/../layouts/header.php';
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="/absensisiswa">Absensi Siswa</a></li>
-                    <li class="breadcrumb-item active">Edit Absensi</li>
+                    <li class="breadcrumb-item"><a href="/absensiguru">Absensi Guru</a></li>
+                    <li class="breadcrumb-item active">Tambah Absensi</li>
                 </ol>
             </nav>
         </div>
@@ -29,19 +29,19 @@ require __DIR__ . '/../layouts/header.php';
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="mb-0">Edit Data Absensi Siswa</h4>
+                        <h4 class="mb-0">Tambah Data Absensi Guru</h4>
                     </div>
                 </div>
-                <form method="POST" action="/absensisiswa/edit/<?= $absensi['id'] ?>" id="formAbsensi">
+                <form method="POST" action="/absensiguru/create" id="formAbsensi">
                 <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nisn" class="form-label">NISN <span class="text-danger">*</span></label>
-                                <select class="form-select" id="nisn" name="nisn" required>
-                                    <option value="">Pilih Siswa</option>
-                                    <?php foreach ($studentsList as $student): ?>
-                                        <option value="<?= htmlspecialchars($student['nisn']) ?>" <?= ($absensi['nisn'] == $student['nisn']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($student['nisn']) ?> - <?= htmlspecialchars($student['namasiswa']) ?>
+                                <label for="nip" class="form-label">NIP <span class="text-danger">*</span></label>
+                                <select class="form-select" id="nip" name="nip" required>
+                                    <!-- <option value="">Pilih Guru</option> -->
+                                    <?php foreach ($teachersList as $teacher): ?>
+                                        <option value="<?= htmlspecialchars($teacher['nip']) ?>">
+                                            <?= htmlspecialchars($teacher['nip']) ?> - <?= htmlspecialchars($teacher['namaguru']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -49,7 +49,7 @@ require __DIR__ . '/../layouts/header.php';
                             
                             <div class="col-md-6 mb-3">
                                 <label for="tanggalabsen" class="form-label">Tanggal Absen <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="tanggalabsen" name="tanggalabsen" value="<?= !empty($absensi['tanggalabsen']) ? htmlspecialchars($absensi['tanggalabsen']) : '' ?>" required>
+                                <input type="date" class="form-control" id="tanggalabsen" name="tanggalabsen" value="<?= date('Y-m-d') ?>" required>
                             </div>
                         </div>
                         
@@ -57,7 +57,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div class="col-md-6 mb-3">
                                 <label for="jammasuk" class="form-label">Jam Masuk <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control time-picker" id="jammasuk" name="jammasuk" value="<?= !empty($absensi['jammasuk']) ? date('H:i', strtotime($absensi['jammasuk'])) : '' ?>" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
+                                    <input type="text" class="form-control time-picker" id="jammasuk" name="jammasuk" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
                                     <button type="button" class="btn btn-outline-secondary" id="jammasuk-btn" title="Pilih Waktu">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                                             <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -72,7 +72,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div class="col-md-6 mb-3">
                                 <label for="jamkeluar" class="form-label">Jam Pulang <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control time-picker" id="jamkeluar" name="jamkeluar" value="<?= !empty($absensi['jamkeluar']) ? date('H:i', strtotime($absensi['jamkeluar'])) : '' ?>" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
+                                    <input type="text" class="form-control time-picker" id="jamkeluar" name="jamkeluar" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
                                     <button type="button" class="btn btn-outline-secondary" id="jamkeluar-btn" title="Pilih Waktu">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                                             <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -89,23 +89,23 @@ require __DIR__ . '/../layouts/header.php';
                             <div class="col-md-6 mb-3">
                                 <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                 <select class="form-select" id="status" name="status" required>
-                                    <option value="hadir" <?= ($absensi['status'] == 'hadir') ? 'selected' : '' ?>>Hadir</option>
-                                    <option value="alpha" <?= ($absensi['status'] == 'alpha') ? 'selected' : '' ?>>Alpha</option>
-                                    <option value="ijin" <?= ($absensi['status'] == 'ijin') ? 'selected' : '' ?>>Ijin</option>
-                                    <option value="sakit" <?= ($absensi['status'] == 'sakit') ? 'selected' : '' ?>>Sakit</option>
+                                    <option value="hadir" selected>Hadir</option>
+                                    <option value="alpha">Alpha</option>
+                                    <option value="ijin">Ijin</option>
+                                    <option value="sakit">Sakit</option>
                                 </select>
                             </div>
                             
                             <div class="col-md-6 mb-3">
                                 <label for="keterangan" class="form-label">Keterangan</label>
-                                <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Masukkan keterangan (opsional)" value="<?= htmlspecialchars($absensi['keterangan'] ?? '') ?>" maxlength="100">
+                                <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Masukkan keterangan (opsional)" maxlength="100">
                             </div>
                         </div>
                     </div>
                     
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="/absensisiswa" class="btn btn-secondary">Batal</a>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <a href="/absensiguru" class="btn btn-secondary">Batal</a>
                     </div>
                 </form>
             </div>
@@ -116,10 +116,10 @@ require __DIR__ . '/../layouts/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Choices.js for NISN select
+    // Initialize Choices.js for NIP select
     function initChoices() {
-        const nisnSelect = document.getElementById('nisn');
-        if (!nisnSelect) return;
+        const nipSelect = document.getElementById('nip');
+        if (!nipSelect) return;
         
         // Wait for Choices.js to load
         if (typeof Choices === 'undefined') {
@@ -128,19 +128,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Destroy existing instance if any
-        if (nisnSelect.choicesInstance) {
-            nisnSelect.choicesInstance.destroy();
+        if (nipSelect.choicesInstance) {
+            nipSelect.choicesInstance.destroy();
         }
         
-        const nisnChoice = new Choices(nisnSelect, {
+        const nipChoice = new Choices(nipSelect, {
             searchEnabled: true,
             searchChoices: true,
             itemSelectText: '',
-            noResultsText: 'Tidak ada siswa yang ditemukan',
-            noChoicesText: 'Tidak ada siswa tersedia',
+            noResultsText: 'Tidak ada guru yang ditemukan',
+            noChoicesText: 'Tidak ada guru tersedia',
             placeholder: true,
-            placeholderValue: 'Pilih Siswa',
-            searchPlaceholderValue: 'Cari NISN atau nama siswa...',
+            placeholderValue: 'Pilih Guru',
+            searchPlaceholderValue: 'Cari NIP atau nama guru...',
             shouldSort: true,
             shouldSortItems: true,
             fuseOptions: {
@@ -151,17 +151,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Store instance for later use
-        nisnSelect.choicesInstance = nisnChoice;
+        nipSelect.choicesInstance = nipChoice;
     }
     
     // Initialize Choices.js
     initChoices();
     
-    // Time picker enhancement - using text input with 24-hour format
+    // Time picker enhancement
     const jamMasukInput = document.getElementById('jammasuk');
     const jamKeluarInput = document.getElementById('jamkeluar');
     const jamMasukBtn = document.getElementById('jammasuk-btn');
     const jamKeluarBtn = document.getElementById('jamkeluar-btn');
+    
+    // Convert 12-hour to 24-hour format
+    function convertTo24Hour(time12h) {
+        if (!time12h) return '';
+        // Check if it's already 24-hour format
+        const time24Pattern = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+        if (time24Pattern.test(time12h)) {
+            return time12h;
+        }
+        // Try to parse 12-hour format
+        const parts = time12h.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (parts) {
+            let hours = parseInt(parts[1], 10);
+            const minutes = parts[2];
+            const ampm = parts[3].toUpperCase();
+            
+            if (ampm === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (ampm === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            return String(hours).padStart(2, '0') + ':' + minutes;
+        }
+        return time12h;
+    }
     
     // Validate time input format (HH:MM, 00-23:00-59)
     function validateTimeInput(input) {
@@ -370,16 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
         });
-    }
-    
-    // Format on page load
-    if (jamMasukInput && jamMasukInput.value) {
-        formatTimeInput(jamMasukInput);
-        validateTimeInput(jamMasukInput);
-    }
-    if (jamKeluarInput && jamKeluarInput.value) {
-        formatTimeInput(jamKeluarInput);
-        validateTimeInput(jamKeluarInput);
     }
 });
 </script>

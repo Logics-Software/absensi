@@ -152,6 +152,14 @@ $router->get('/wilayah/api/kelurahan', 'WilayahController', 'apiKelurahan');
 $router->get('/konfigurasi', 'KonfigurasiController', 'index');
 $router->post('/konfigurasi', 'KonfigurasiController', 'index');
 
+// Setting Jam Belajar routes (admin only)
+$router->get('/settingjambelajar', 'SettingJamBelajarController', 'index');
+$router->post('/settingjambelajar', 'SettingJamBelajarController', 'index');
+
+// Kalender Akademik routes (admin only)
+$router->get('/kalenderakademik', 'KalenderAkademikController', 'index');
+$router->post('/kalenderakademik', 'KalenderAkademikController', 'index');
+
 // Master Guru routes (admin only)
 $router->get('/masterguru', 'MasterGuruController', 'index');
 $router->get('/masterguru/create', 'MasterGuruController', 'create');
@@ -200,6 +208,14 @@ $router->post('/absensisiswa/create', 'AbsensiSiswaController', 'create');
 $router->get('/absensisiswa/edit/{id}', 'AbsensiSiswaController', 'edit');
 $router->post('/absensisiswa/edit/{id}', 'AbsensiSiswaController', 'edit');
 $router->get('/absensisiswa/delete/{id}', 'AbsensiSiswaController', 'delete');
+
+// Absensi Guru routes (admin only)
+$router->get('/absensiguru', 'AbsensiGuruController', 'index');
+$router->get('/absensiguru/create', 'AbsensiGuruController', 'create');
+$router->post('/absensiguru/create', 'AbsensiGuruController', 'create');
+$router->get('/absensiguru/edit/{id}', 'AbsensiGuruController', 'edit');
+$router->post('/absensiguru/edit/{id}', 'AbsensiGuruController', 'edit');
+$router->get('/absensiguru/delete/{id}', 'AbsensiGuruController', 'delete');
 
 // Holiday routes (admin only)
 $router->get('/holiday', 'HolidayController', 'index');

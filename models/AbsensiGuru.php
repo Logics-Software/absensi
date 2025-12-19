@@ -1,5 +1,5 @@
 <?php
-class AbsensiSiswa {
+class AbsensiGuru {
     private $db;
     
     public function __construct() {
@@ -11,10 +11,10 @@ class AbsensiSiswa {
      */
     public function findById($id) {
         $sql = "SELECT a.*, 
-                ms.namasiswa,
-                ms.nisn as nisn_full
-                FROM absensi_siswa a
-                LEFT JOIN mastersiswa ms ON a.nisn = ms.nisn
+                mg.namaguru,
+                mg.nip as nip_full
+                FROM absensi_guru a
+                LEFT JOIN masterguru mg ON a.nip = mg.nip
                 WHERE a.id = ?";
         return $this->db->fetchOne($sql, [$id]);
     }
@@ -22,7 +22,7 @@ class AbsensiSiswa {
     /**
      * Get all absensi with pagination, search, and period filter
      */
-    public function getAll($page = 1, $perPage = 10, $search = '', $sortBy = 'id', $sortOrder = 'DESC', $period = null, $dateFrom = null, $dateTo = null, $filterKelas = null) {
+    public function getAll($page = 1, $perPage = 10, $search = '', $sortBy = 'id', $sortOrder = 'DESC', $period = null, $dateFrom = null, $dateTo = null) {
         $offset = ($page - 1) * $perPage;
         
         $where = "1=1";
@@ -30,15 +30,9 @@ class AbsensiSiswa {
         
         // Search filter
         if (!empty($search)) {
-            $where .= " AND (a.nisn LIKE ? OR ms.namasiswa LIKE ? OR a.keterangan LIKE ?)";
+            $where .= " AND (a.nip LIKE ? OR mg.namaguru LIKE ? OR a.keterangan LIKE ?)";
             $searchParam = "%{$search}%";
             $params = [$searchParam, $searchParam, $searchParam];
-        }
-        
-        // Filter by kelas
-        if ($filterKelas !== null && $filterKelas > 0) {
-            $where .= " AND ms.idkelas = ?";
-            $params[] = (int)$filterKelas;
         }
         
         // Period filter
@@ -55,15 +49,15 @@ class AbsensiSiswa {
             $params[] = $dateTo;
         }
         
-        $validSortColumns = ['id', 'nisn', 'tanggalabsen', 'jammasuk', 'jamkeluar', 'status', 'created_at'];
+        $validSortColumns = ['id', 'nip', 'tanggalabsen', 'jammasuk', 'jamkeluar', 'status', 'created_at'];
         $sortBy = in_array($sortBy, $validSortColumns) ? $sortBy : 'id';
         $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
         
         $sql = "SELECT a.*, 
-                ms.namasiswa,
-                ms.nisn as nisn_full
-                FROM absensi_siswa a
-                LEFT JOIN mastersiswa ms ON a.nisn = ms.nisn
+                mg.namaguru,
+                mg.nip as nip_full
+                FROM absensi_guru a
+                LEFT JOIN masterguru mg ON a.nip = mg.nip
                 WHERE {$where} 
                 ORDER BY a.{$sortBy} {$sortOrder} 
                 LIMIT ? OFFSET ?";
@@ -76,20 +70,14 @@ class AbsensiSiswa {
     /**
      * Count total absensi with search and period filter
      */
-    public function count($search = '', $period = null, $dateFrom = null, $dateTo = null, $filterKelas = null) {
+    public function count($search = '', $period = null, $dateFrom = null, $dateTo = null) {
         $where = "1=1";
         $params = [];
         
         if (!empty($search)) {
-            $where .= " AND (a.nisn LIKE ? OR ms.namasiswa LIKE ? OR a.keterangan LIKE ?)";
+            $where .= " AND (a.nip LIKE ? OR mg.namaguru LIKE ? OR a.keterangan LIKE ?)";
             $searchParam = "%{$search}%";
             $params = [$searchParam, $searchParam, $searchParam];
-        }
-        
-        // Filter by kelas
-        if ($filterKelas !== null && $filterKelas > 0) {
-            $where .= " AND ms.idkelas = ?";
-            $params[] = (int)$filterKelas;
         }
         
         // Period filter
@@ -107,8 +95,8 @@ class AbsensiSiswa {
         }
         
         $sql = "SELECT COUNT(*) as total 
-                FROM absensi_siswa a
-                LEFT JOIN mastersiswa ms ON a.nisn = ms.nisn
+                FROM absensi_guru a
+                LEFT JOIN masterguru mg ON a.nip = mg.nip
                 WHERE {$where}";
         $result = $this->db->fetchOne($sql, $params);
         return $result['total'] ?? 0;
@@ -191,11 +179,11 @@ class AbsensiSiswa {
             $durasidetik = (int)$diff->s;
         }
         
-        $sql = "INSERT INTO absensi_siswa (nisn, tanggalabsen, jammasuk, jamkeluar, durasijam, durasimenit, durasidetik, status, keterangan) 
+        $sql = "INSERT INTO absensi_guru (nip, tanggalabsen, jammasuk, jamkeluar, durasijam, durasimenit, durasidetik, status, keterangan) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $params = [
-            $data['nisn'] ?? null,
+            $data['nip'] ?? null,
             $data['tanggalabsen'] ?? null,
             !empty($data['jammasuk']) ? $data['jammasuk'] : null,
             !empty($data['jamkeluar']) ? $data['jamkeluar'] : null,
@@ -231,7 +219,7 @@ class AbsensiSiswa {
         $fields = [];
         $params = [];
         
-        $allowedFields = ['nisn', 'tanggalabsen', 'jammasuk', 'jamkeluar', 'status', 'keterangan'];
+        $allowedFields = ['nip', 'tanggalabsen', 'jammasuk', 'jamkeluar', 'status', 'keterangan'];
         
         foreach ($allowedFields as $field) {
             if (array_key_exists($field, $data)) {
@@ -267,13 +255,13 @@ class AbsensiSiswa {
         }
         
         $params[] = $id;
-        $sql = "UPDATE absensi_siswa SET " . implode(', ', $fields) . " WHERE id = ?";
+        $sql = "UPDATE absensi_guru SET " . implode(', ', $fields) . " WHERE id = ?";
         
         try {
             $result = $this->db->query($sql, $params);
             return $result !== false;
         } catch (Exception $e) {
-            error_log("AbsensiSiswa update error: " . $e->getMessage() . " | SQL: " . $sql);
+            error_log("AbsensiGuru update error: " . $e->getMessage() . " | SQL: " . $sql);
             throw $e;
         }
     }
@@ -282,15 +270,15 @@ class AbsensiSiswa {
      * Delete absensi
      */
     public function delete($id) {
-        $sql = "DELETE FROM absensi_siswa WHERE id = ?";
+        $sql = "DELETE FROM absensi_guru WHERE id = ?";
         return $this->db->query($sql, [$id]);
     }
     
     /**
-     * Get all students for dropdown
+     * Get all teachers for dropdown
      */
-    public function getAllStudents() {
-        $sql = "SELECT nisn, namasiswa FROM mastersiswa WHERE status = 'aktif' ORDER BY namasiswa";
+    public function getAllTeachers() {
+        $sql = "SELECT nip, namaguru FROM masterguru WHERE status = 'aktif' ORDER BY namaguru";
         return $this->db->fetchAll($sql, []);
     }
 }

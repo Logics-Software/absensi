@@ -1,5 +1,5 @@
 <?php
-$title = 'Edit Absensi Siswa';
+$title = 'Edit Absensi Guru';
 $config = require __DIR__ . '/../../config/app.php';
 $baseUrl = rtrim($config['base_url'], '/');
 if (empty($baseUrl) || $baseUrl === 'http://' || $baseUrl === 'https://') {
@@ -17,7 +17,7 @@ require __DIR__ . '/../layouts/header.php';
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="/absensisiswa">Absensi Siswa</a></li>
+                    <li class="breadcrumb-item"><a href="/absensiguru">Absensi Guru</a></li>
                     <li class="breadcrumb-item active">Edit Absensi</li>
                 </ol>
             </nav>
@@ -29,19 +29,19 @@ require __DIR__ . '/../layouts/header.php';
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="mb-0">Edit Data Absensi Siswa</h4>
+                        <h4 class="mb-0">Edit Data Absensi Guru</h4>
                     </div>
                 </div>
-                <form method="POST" action="/absensisiswa/edit/<?= $absensi['id'] ?>" id="formAbsensi">
+                <form method="POST" action="/absensiguru/edit/<?= $absensi['id'] ?>" id="formAbsensi">
                 <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nisn" class="form-label">NISN <span class="text-danger">*</span></label>
-                                <select class="form-select" id="nisn" name="nisn" required>
-                                    <option value="">Pilih Siswa</option>
-                                    <?php foreach ($studentsList as $student): ?>
-                                        <option value="<?= htmlspecialchars($student['nisn']) ?>" <?= ($absensi['nisn'] == $student['nisn']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($student['nisn']) ?> - <?= htmlspecialchars($student['namasiswa']) ?>
+                                <label for="nip" class="form-label">NIP <span class="text-danger">*</span></label>
+                                <select class="form-select" id="nip" name="nip" required>
+                                    <option value="">Pilih Guru</option>
+                                    <?php foreach ($teachersList as $teacher): ?>
+                                        <option value="<?= htmlspecialchars($teacher['nip']) ?>" <?= ($absensi['nip'] == $teacher['nip']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($teacher['nip']) ?> - <?= htmlspecialchars($teacher['namaguru']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -105,7 +105,7 @@ require __DIR__ . '/../layouts/header.php';
                     
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="/absensisiswa" class="btn btn-secondary">Batal</a>
+                        <a href="/absensiguru" class="btn btn-secondary">Batal</a>
                     </div>
                 </form>
             </div>
@@ -116,10 +116,10 @@ require __DIR__ . '/../layouts/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Choices.js for NISN select
+    // Initialize Choices.js for NIP select
     function initChoices() {
-        const nisnSelect = document.getElementById('nisn');
-        if (!nisnSelect) return;
+        const nipSelect = document.getElementById('nip');
+        if (!nipSelect) return;
         
         // Wait for Choices.js to load
         if (typeof Choices === 'undefined') {
@@ -128,19 +128,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Destroy existing instance if any
-        if (nisnSelect.choicesInstance) {
-            nisnSelect.choicesInstance.destroy();
+        if (nipSelect.choicesInstance) {
+            nipSelect.choicesInstance.destroy();
         }
         
-        const nisnChoice = new Choices(nisnSelect, {
+        const nipChoice = new Choices(nipSelect, {
             searchEnabled: true,
             searchChoices: true,
             itemSelectText: '',
-            noResultsText: 'Tidak ada siswa yang ditemukan',
-            noChoicesText: 'Tidak ada siswa tersedia',
+            noResultsText: 'Tidak ada guru yang ditemukan',
+            noChoicesText: 'Tidak ada guru tersedia',
             placeholder: true,
-            placeholderValue: 'Pilih Siswa',
-            searchPlaceholderValue: 'Cari NISN atau nama siswa...',
+            placeholderValue: 'Pilih Guru',
+            searchPlaceholderValue: 'Cari NIP atau nama guru...',
             shouldSort: true,
             shouldSortItems: true,
             fuseOptions: {
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Store instance for later use
-        nisnSelect.choicesInstance = nisnChoice;
+        nipSelect.choicesInstance = nipChoice;
     }
     
     // Initialize Choices.js

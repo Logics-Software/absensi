@@ -2201,3 +2201,24 @@ body.mapbox-fullscreen-open {
     min-height: 350px;
   }
 }
+
+/* ========================================
+   TIME PICKER STYLING
+   ======================================== */
+
+.time-picker {
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.input-group .btn {
+  border-left: 0;
+  border-color: #e7e7e7;
+}
+
+.input-group .form-control:focus + .btn {
+  border-color: #e7e7e7;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}

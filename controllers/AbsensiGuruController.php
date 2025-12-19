@@ -1,5 +1,5 @@
 <?php
-class AbsensiSiswaController extends Controller {
+class AbsensiGuruController extends Controller {
     public function index() {
         Auth::requireRole(['admin']);
         
@@ -9,7 +9,6 @@ class AbsensiSiswaController extends Controller {
         $period = $_GET['period'] ?? null;
         $dateFrom = $_GET['date_from'] ?? null;
         $dateTo = $_GET['date_to'] ?? null;
-        $filterKelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : null;
         $sortBy = $_GET['sort_by'] ?? 'id';
         $sortOrder = $_GET['sort_order'] ?? 'DESC';
         
@@ -18,14 +17,10 @@ class AbsensiSiswaController extends Controller {
             $perPage = 10;
         }
         
-        $absensiSiswaModel = new AbsensiSiswa();
-        $absensiList = $absensiSiswaModel->getAll($page, $perPage, $search, $sortBy, $sortOrder, $period, $dateFrom, $dateTo, $filterKelas);
-        $total = $absensiSiswaModel->count($search, $period, $dateFrom, $dateTo, $filterKelas);
+        $absensiGuruModel = new AbsensiGuru();
+        $absensiList = $absensiGuruModel->getAll($page, $perPage, $search, $sortBy, $sortOrder, $period, $dateFrom, $dateTo);
+        $total = $absensiGuruModel->count($search, $period, $dateFrom, $dateTo);
         $totalPages = $perPage > 0 ? (int)ceil($total / $perPage) : 1;
-        
-        // Get kelas list for dropdown
-        $kelasModel = new Kelas();
-        $kelasList = $kelasModel->getAll(1, 1000, '', 'namakelas', 'ASC');
         
         $data = [
             'absensiList' => $absensiList,
@@ -37,20 +32,18 @@ class AbsensiSiswaController extends Controller {
             'period' => $period,
             'dateFrom' => $dateFrom,
             'dateTo' => $dateTo,
-            'filterKelas' => $filterKelas,
-            'kelasList' => $kelasList,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder
         ];
         
-        $this->view('absensisiswa/index', $data);
+        $this->view('absensiguru/index', $data);
     }
     
     public function create() {
         Auth::requireRole(['admin']);
         
-        $absensiSiswaModel = new AbsensiSiswa();
-        $studentsList = $absensiSiswaModel->getAllStudents();
+        $absensiGuruModel = new AbsensiGuru();
+        $teachersList = $absensiGuruModel->getAllTeachers();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate and sanitize status
@@ -72,7 +65,7 @@ class AbsensiSiswaController extends Controller {
             }
             
             $data = [
-                'nisn' => trim($_POST['nisn'] ?? ''),
+                'nip' => trim($_POST['nip'] ?? ''),
                 'tanggalabsen' => $_POST['tanggalabsen'] ?? null,
                 'jammasuk' => $jammasuk,
                 'jamkeluar' => $jamkeluar,
@@ -81,46 +74,46 @@ class AbsensiSiswaController extends Controller {
             ];
             
             // Validate required fields
-            if (empty($data['nisn'])) {
-                Message::error('NISN wajib diisi');
-                $this->redirect('/absensisiswa/create');
+            if (empty($data['nip'])) {
+                Message::error('NIP wajib diisi');
+                $this->redirect('/absensiguru/create');
             }
             
             if (empty($data['tanggalabsen'])) {
                 Message::error('Tanggal Absen wajib diisi');
-                $this->redirect('/absensisiswa/create');
+                $this->redirect('/absensiguru/create');
             }
             
             try {
-                $absensiSiswaModel->create($data);
-                Message::success('Data Absensi Siswa berhasil ditambahkan');
-                $this->redirect('/absensisiswa');
+                $absensiGuruModel->create($data);
+                Message::success('Data Absensi Guru berhasil ditambahkan');
+                $this->redirect('/absensiguru');
             } catch (Exception $e) {
-                error_log("Error creating absensi siswa: " . $e->getMessage());
+                error_log("Error creating absensi guru: " . $e->getMessage());
                 Message::error('Gagal menambahkan data. Silakan coba lagi atau hubungi administrator.');
-                $this->redirect('/absensisiswa/create');
+                $this->redirect('/absensiguru/create');
             }
         }
         
         $data = [
-            'studentsList' => $studentsList
+            'teachersList' => $teachersList
         ];
         
-        $this->view('absensisiswa/create', $data);
+        $this->view('absensiguru/create', $data);
     }
     
     public function edit($id) {
         Auth::requireRole(['admin']);
         
-        $absensiSiswaModel = new AbsensiSiswa();
-        $absensi = $absensiSiswaModel->findById($id);
+        $absensiGuruModel = new AbsensiGuru();
+        $absensi = $absensiGuruModel->findById($id);
         
         if (!$absensi) {
-            Message::error('Data Absensi Siswa tidak ditemukan');
-            $this->redirect('/absensisiswa');
+            Message::error('Data Absensi Guru tidak ditemukan');
+            $this->redirect('/absensiguru');
         }
         
-        $studentsList = $absensiSiswaModel->getAllStudents();
+        $teachersList = $absensiGuruModel->getAllTeachers();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate and sanitize status
@@ -142,7 +135,7 @@ class AbsensiSiswaController extends Controller {
             }
             
             $data = [
-                'nisn' => trim($_POST['nisn'] ?? ''),
+                'nip' => trim($_POST['nip'] ?? ''),
                 'tanggalabsen' => $_POST['tanggalabsen'] ?? null,
                 'jammasuk' => $jammasuk,
                 'jamkeluar' => $jamkeluar,
@@ -151,54 +144,54 @@ class AbsensiSiswaController extends Controller {
             ];
             
             // Validate required fields
-            if (empty($data['nisn'])) {
-                Message::error('NISN wajib diisi');
-                $this->redirect("/absensisiswa/edit/{$id}");
+            if (empty($data['nip'])) {
+                Message::error('NIP wajib diisi');
+                $this->redirect("/absensiguru/edit/{$id}");
             }
             
             if (empty($data['tanggalabsen'])) {
                 Message::error('Tanggal Absen wajib diisi');
-                $this->redirect("/absensisiswa/edit/{$id}");
+                $this->redirect("/absensiguru/edit/{$id}");
             }
             
             try {
-                $result = $absensiSiswaModel->update($id, $data);
+                $result = $absensiGuruModel->update($id, $data);
                 if ($result) {
-                    Message::success('Data Absensi Siswa berhasil diupdate');
-                    $this->redirect('/absensisiswa');
+                    Message::success('Data Absensi Guru berhasil diupdate');
+                    $this->redirect('/absensiguru');
                 } else {
                     Message::error('Gagal mengupdate data. Tidak ada perubahan data.');
-                    $this->redirect("/absensisiswa/edit/{$id}");
+                    $this->redirect("/absensiguru/edit/{$id}");
                 }
             } catch (Exception $e) {
-                error_log("Error updating absensi siswa: " . $e->getMessage());
+                error_log("Error updating absensi guru: " . $e->getMessage());
                 Message::error('Gagal mengupdate data. Silakan coba lagi atau hubungi administrator.');
-                $this->redirect("/absensisiswa/edit/{$id}");
+                $this->redirect("/absensiguru/edit/{$id}");
             }
         }
         
         $data = [
             'absensi' => $absensi,
-            'studentsList' => $studentsList
+            'teachersList' => $teachersList
         ];
         
-        $this->view('absensisiswa/edit', $data);
+        $this->view('absensiguru/edit', $data);
     }
     
     public function delete($id) {
         Auth::requireRole(['admin']);
         
-        $absensiSiswaModel = new AbsensiSiswa();
-        $absensi = $absensiSiswaModel->findById($id);
+        $absensiGuruModel = new AbsensiGuru();
+        $absensi = $absensiGuruModel->findById($id);
         
         if (!$absensi) {
-            Message::error('Data Absensi Siswa tidak ditemukan');
-            $this->redirect('/absensisiswa');
+            Message::error('Data Absensi Guru tidak ditemukan');
+            $this->redirect('/absensiguru');
         }
         
-        $absensiSiswaModel->delete($id);
-        Message::success('Data Absensi Siswa berhasil dihapus');
-        $this->redirect('/absensisiswa');
+        $absensiGuruModel->delete($id);
+        Message::success('Data Absensi Guru berhasil dihapus');
+        $this->redirect('/absensiguru');
     }
 }
 

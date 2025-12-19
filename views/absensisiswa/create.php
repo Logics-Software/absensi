@@ -113,21 +113,6 @@ require __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<style>
-.time-picker {
-    cursor: pointer;
-    font-family: monospace;
-    font-size: 1rem;
-    text-align: center;
-}
-.input-group .btn {
-    border-left: 0;
-}
-.input-group .form-control:focus + .btn {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
