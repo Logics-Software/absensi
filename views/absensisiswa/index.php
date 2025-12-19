@@ -103,7 +103,7 @@ require __DIR__ . '/../layouts/header.php';
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('id', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">ID</a></th>
+                                    <th>No.</th>
                                     <th class="th-sortable"><a href="<?= getSortUrl('nisn', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">NISN</a></th>
                                     <th>Nama Siswa</th>
                                     <th class="th-sortable"><a href="<?= getSortUrl('tanggalabsen', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Tanggal Absen</a></th>
@@ -126,7 +126,7 @@ require __DIR__ . '/../layouts/header.php';
                                 foreach ($absensiList as $absensi): 
                                 ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($absensi['id']) ?></td>
+                                    <td align="center"><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($absensi['nisn'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($absensi['namasiswa'] ?? '-') ?></td>
                                     <td><?= !empty($absensi['tanggalabsen']) ? date('d/m/Y', strtotime($absensi['tanggalabsen'])) : '-' ?></td>

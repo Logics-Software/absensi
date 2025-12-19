@@ -38,7 +38,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div class="col-md-6 mb-3">
                                 <label for="nisn" class="form-label">NISN <span class="text-danger">*</span></label>
                                 <select class="form-select" id="nisn" name="nisn" required>
-                                    <option value="">Pilih Siswa</option>
+                                    <!-- <option value="">Pilih Siswa</option> -->
                                     <?php foreach ($studentsList as $student): ?>
                                         <option value="<?= htmlspecialchars($student['nisn']) ?>">
                                             <?= htmlspecialchars($student['nisn']) ?> - <?= htmlspecialchars($student['namasiswa']) ?>
@@ -203,54 +203,141 @@ document.addEventListener('DOMContentLoaded', function() {
         return time12h;
     }
     
-    // Format time input to HH:MM (remove seconds) - ensure 24 hour format (00-23)
-    function formatTimeInput(input) {
-        if (input && input.value) {
-            // Convert from 12-hour to 24-hour if needed
-            let timeValue = convertTo24Hour(input.value);
-            
-            // If value includes seconds, remove them
-            if (timeValue.length > 5) {
-                timeValue = timeValue.substring(0, 5);
-            }
-            
-            // Ensure format is HH:MM (24 hour: 00-23)
-            const timePattern = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-            if (!timePattern.test(timeValue)) {
-                // If invalid, try to fix it
-                const parts = timeValue.split(':');
-                if (parts.length === 2) {
-                    let hours = parseInt(parts[0], 10);
-                    let minutes = parseInt(parts[1], 10);
-                    // Ensure hours are in 24-hour format (00-23)
-                    if (isNaN(hours) || hours < 0) hours = 0;
-                    if (hours > 23) hours = 23;
-                    // Ensure minutes are 00-59
-                    if (isNaN(minutes) || minutes < 0) minutes = 0;
-                    if (minutes > 59) minutes = 59;
-                    // Format with leading zeros (00-23 for hours, 00-59 for minutes)
-                    timeValue = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
-                }
-            }
-            
-            // Set the value back
-            input.value = timeValue;
+    // Validate time input format (HH:MM, 00-23:00-59)
+    function validateTimeInput(input) {
+        if (!input) return false;
+        
+        const timePattern = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+        const value = input.value.trim();
+        
+        if (!value) {
+            input.setCustomValidity('Jam harus diisi');
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            return false;
         }
+        
+        if (!timePattern.test(value)) {
+            input.setCustomValidity('Format jam tidak valid. Gunakan format HH:MM (00:00 - 23:59)');
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            return false;
+        }
+        
+        // Additional validation: check if hours and minutes are valid
+        const parts = value.split(':');
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+        
+        if (isNaN(hours) || hours < 0 || hours > 23) {
+            input.setCustomValidity('Jam harus antara 00-23');
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            return false;
+        }
+        
+        if (isNaN(minutes) || minutes < 0 || minutes > 59) {
+            input.setCustomValidity('Menit harus antara 00-59');
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            return false;
+        }
+        
+        // Valid
+        input.setCustomValidity('');
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        return true;
+    }
+    
+    // Format time input to HH:MM - 24 hour format (00-23)
+    // Only format, don't validate during typing
+    function formatTimeInput(input, validate = false) {
+        if (!input) return;
+        
+        if (!input.value || input.value.trim() === '') {
+            if (validate) {
+                input.classList.remove('is-invalid', 'is-valid');
+            }
+            return;
+        }
+        
+        let value = input.value.replace(/[^0-9:]/g, ''); // Remove non-numeric except :
+        
+        // Auto-format as user types (only add colon, don't force format)
+        if (value.length > 0 && !value.includes(':')) {
+            if (value.length === 2) {
+                value = value + ':';
+            } else if (value.length > 2) {
+                value = value.substring(0, 2) + ':' + value.substring(2);
+            }
+        }
+        
+        // Limit to 5 characters (HH:MM)
+        if (value.length > 5) {
+            value = value.substring(0, 5);
+        }
+        
+        // Only format and validate if validate flag is true (on blur)
+        if (validate) {
+            const parts = value.split(':');
+            if (parts.length === 2) {
+                let hours = parseInt(parts[0], 10) || 0;
+                let minutes = parseInt(parts[1], 10) || 0;
+                
+                // Ensure hours are 00-23
+                if (hours < 0) hours = 0;
+                if (hours > 23) hours = 23;
+                
+                // Ensure minutes are 00-59
+                if (minutes < 0) minutes = 0;
+                if (minutes > 59) minutes = 59;
+                
+                // Format with leading zeros
+                value = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+            }
+            
+            input.value = value;
+            validateTimeInput(input);
+        } else {
+            // Just update the value without validation during typing
+            input.value = value;
+        }
+    }
+    
+    // Time mask - auto format as user types (light formatting only)
+    function applyTimeMask(input) {
+        if (!input) return;
+        input.addEventListener('input', function(e) {
+            // Only do light formatting during typing (add colon, limit length)
+            formatTimeInput(this, false);
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
     }
     
     // Apply time mask to inputs
     if (jamMasukInput) {
         applyTimeMask(jamMasukInput);
-        jamMasukInput.addEventListener('input', function() {
-            formatTimeInput(this);
-        });
-        jamMasukInput.addEventListener('change', function() {
-            formatTimeInput(this);
-            validateTimeInput(this);
-        });
+        // Only validate on blur (lost focus), not on change
         jamMasukInput.addEventListener('blur', function() {
-            formatTimeInput(this);
-            validateTimeInput(this);
+            formatTimeInput(this, true); // true = validate and format
         });
         
         // Double click to set current time
@@ -259,23 +346,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             this.value = hours + ':' + minutes;
-            formatTimeInput(this);
-            validateTimeInput(this);
+            formatTimeInput(this, true); // true = validate and format
         });
     }
     
     if (jamKeluarInput) {
         applyTimeMask(jamKeluarInput);
-        jamKeluarInput.addEventListener('input', function() {
-            formatTimeInput(this);
-        });
-        jamKeluarInput.addEventListener('change', function() {
-            formatTimeInput(this);
-            validateTimeInput(this);
-        });
+        // Only validate on blur (lost focus), not on change
         jamKeluarInput.addEventListener('blur', function() {
-            formatTimeInput(this);
-            validateTimeInput(this);
+            formatTimeInput(this, true); // true = validate and format
         });
         
         // Double click to set current time
@@ -284,8 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             this.value = hours + ':' + minutes;
-            formatTimeInput(this);
-            validateTimeInput(this);
+            formatTimeInput(this, true); // true = validate and format
         });
     }
     
