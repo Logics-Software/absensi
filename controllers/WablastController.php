@@ -743,35 +743,58 @@ class WablastController extends Controller {
         $replacements['{{hari_indonesia}}'] = $this->getIndonesianDayName(date('w')); // 0=Sunday, 6=Saturday
         
         // Get absensi data for jam masuk and jam keluar from database fields jammasuk and jamkeluar
-        $jamMasuk = date('H:i'); // Default to current time
-        $jamKeluar = date('H:i'); // Default to current time
+        // DO NOT use system time - only use data from database
+        $jamMasuk = ''; // Empty by default - must come from database
+        $jamKeluar = ''; // Empty by default - must come from database
         $status = 'Hadir'; // Default status
         
         if ($siswa && !empty($siswa['nisn'])) {
-            // Get absensi data from table absensi_siswa
+            // Get absensi data from table absensi_siswa for today's date
             $absensi = $absensiSiswaModel->getByNisnAndDate($siswa['nisn'], $tanggal);
+            
+            // If not found for today, try to get the latest absensi record
+            if (!$absensi) {
+                $db = Database::getInstance();
+                $sql = "SELECT * FROM absensi_siswa WHERE nisn = ? ORDER BY tanggalabsen DESC, id DESC LIMIT 1";
+                $absensi = $db->fetchOne($sql, [$siswa['nisn']]);
+            }
+            
             if ($absensi) {
                 // Format jam masuk from field 'jammasuk' (from time format to H:i)
                 if (!empty($absensi['jammasuk'])) {
-                    // jammasuk might be in format 'HH:MM:SS' or 'HH:MM'
-                    $jamMasukTime = strtotime($absensi['jammasuk']);
-                    if ($jamMasukTime !== false) {
-                        $jamMasuk = date('H:i', $jamMasukTime);
+                    // jammasuk might be in format 'HH:MM:SS' or 'HH:MM' or TIME type
+                    // Try to parse as time first
+                    if (is_string($absensi['jammasuk'])) {
+                        // If it's a string, try strtotime first
+                        $jamMasukTime = strtotime($absensi['jammasuk']);
+                        if ($jamMasukTime !== false) {
+                            $jamMasuk = date('H:i', $jamMasukTime);
+                        } else {
+                            // Try direct format if already in H:i or H:i:s
+                            $jamMasuk = substr(trim($absensi['jammasuk']), 0, 5);
+                        }
                     } else {
-                        // Try direct format if already in H:i
-                        $jamMasuk = substr($absensi['jammasuk'], 0, 5);
+                        // If it's already a time object or other format, convert to string first
+                        $jamMasuk = substr((string)$absensi['jammasuk'], 0, 5);
                     }
                 }
                 
                 // Format jam keluar from field 'jamkeluar' (from time format to H:i)
                 if (!empty($absensi['jamkeluar'])) {
-                    // jamkeluar might be in format 'HH:MM:SS' or 'HH:MM'
-                    $jamKeluarTime = strtotime($absensi['jamkeluar']);
-                    if ($jamKeluarTime !== false) {
-                        $jamKeluar = date('H:i', $jamKeluarTime);
+                    // jamkeluar might be in format 'HH:MM:SS' or 'HH:MM' or TIME type
+                    // Try to parse as time first
+                    if (is_string($absensi['jamkeluar'])) {
+                        // If it's a string, try strtotime first
+                        $jamKeluarTime = strtotime($absensi['jamkeluar']);
+                        if ($jamKeluarTime !== false) {
+                            $jamKeluar = date('H:i', $jamKeluarTime);
+                        } else {
+                            // Try direct format if already in H:i or H:i:s
+                            $jamKeluar = substr(trim($absensi['jamkeluar']), 0, 5);
+                        }
                     } else {
-                        // Try direct format if already in H:i
-                        $jamKeluar = substr($absensi['jamkeluar'], 0, 5);
+                        // If it's already a time object or other format, convert to string first
+                        $jamKeluar = substr((string)$absensi['jamkeluar'], 0, 5);
                     }
                 }
                 
