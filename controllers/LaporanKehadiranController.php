@@ -142,5 +142,84 @@ class LaporanKehadiranController extends Controller {
         
         return $statusMap[strtolower($status)] ?? 'A';
     }
+    
+    /**
+     * Detail absensi per siswa
+     */
+    public function detail($nisn) {
+        Auth::requireRole(['admin', 'guru']);
+        
+        $mastersiswaModel = new Mastersiswa();
+        $absensiSiswaModel = new AbsensiSiswa();
+        
+        // Get siswa info
+        $siswa = $mastersiswaModel->findByNisn($nisn);
+        if (!$siswa) {
+            Message::set('Siswa tidak ditemukan.', 'error');
+            header('Location: /laporankehadiran');
+            exit;
+        }
+        
+        // Get filter parameters
+        $bulan = $_GET['bulan'] ?? date('m');
+        $tahun = $_GET['tahun'] ?? date('Y');
+        
+        // Get kalender akademik untuk bulan tersebut
+        $kalenderModel = new KalenderAkademik();
+        $kalenderList = $kalenderModel->getByMonth($tahun, $bulan);
+        
+        // Buat array tanggal aktif (hanya tanggal yang ada di kalender akademik)
+        $tanggalAktif = [];
+        foreach ($kalenderList as $kal) {
+            $tanggalAktif[] = $kal['tanggal'];
+        }
+        
+        // Jika tidak ada kalender akademik, gunakan semua hari kerja dalam bulan
+        if (empty($tanggalAktif)) {
+            $tanggalAktif = $this->getWorkingDays($tahun, $bulan);
+        }
+        
+        // Get absensi untuk siswa dalam periode tersebut
+        // Tampilkan semua tanggal aktif, jika tidak ada absensi maka status Alpha
+        $absensiList = [];
+        foreach ($tanggalAktif as $tanggal) {
+            $absensi = $absensiSiswaModel->getByNisnAndDate($nisn, $tanggal);
+            if ($absensi) {
+                // Ada data absensi, gunakan data yang ada
+                $absensiList[] = $absensi;
+            } else {
+                // Tidak ada data absensi, buat record dengan status Alpha
+                $absensiList[] = [
+                    'id' => null,
+                    'nisn' => $nisn,
+                    'tanggalabsen' => $tanggal,
+                    'jammasuk' => null,
+                    'jamkeluar' => null,
+                    'durasijam' => 0,
+                    'durasimenit' => 0,
+                    'durasidetik' => 0,
+                    'status' => 'alpha',
+                    'keterangan' => null,
+                    'created_at' => null,
+                    'updated_at' => null
+                ];
+            }
+        }
+        
+        // Sort by tanggal
+        usort($absensiList, function($a, $b) {
+            return strcmp($a['tanggalabsen'], $b['tanggalabsen']);
+        });
+        
+        $data = [
+            'siswa' => $siswa,
+            'absensi_list' => $absensiList,
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+            'tanggal_aktif' => $tanggalAktif
+        ];
+        
+        $this->view('laporankehadiran/detail', $data);
+    }
 }
 

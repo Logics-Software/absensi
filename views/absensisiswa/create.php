@@ -55,7 +55,7 @@ require __DIR__ . '/../layouts/header.php';
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="jammasuk" class="form-label">Jam Masuk <span class="text-danger">*</span></label>
+                                <label for="jammasuk" class="form-label">Jam Masuk <span class="text-danger" id="jammasuk-required">*</span></label>
                                 <div class="input-group">
                                     <input type="text" class="form-control time-picker" id="jammasuk" name="jammasuk" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
                                     <button type="button" class="btn btn-outline-secondary" id="jammasuk-btn" title="Pilih Waktu">
@@ -70,7 +70,7 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="jamkeluar" class="form-label">Jam Pulang <span class="text-danger">*</span></label>
+                                <label for="jamkeluar" class="form-label">Jam Pulang <span class="text-danger" id="jamkeluar-required">*</span></label>
                                 <div class="input-group">
                                     <input type="text" class="form-control time-picker" id="jamkeluar" name="jamkeluar" placeholder="00:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" required>
                                     <button type="button" class="btn btn-outline-secondary" id="jamkeluar-btn" title="Pilih Waktu">
@@ -93,6 +93,8 @@ require __DIR__ . '/../layouts/header.php';
                                     <option value="alpha">Alpha</option>
                                     <option value="ijin">Ijin</option>
                                     <option value="sakit">Sakit</option>
+                                    <option value="terlambat">Terlambat</option>
+                                    <option value="pulang_awal">Pulang Awal</option>
                                 </select>
                             </div>
                             
@@ -367,25 +369,86 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Handle status change - make jam masuk and jam pulang optional for Alpha, Ijin, Sakit
+    const statusSelect = document.getElementById('status');
+    if (statusSelect) {
+        function updateTimeFieldsRequired() {
+            const status = statusSelect.value;
+            const optionalStatuses = ['alpha', 'ijin', 'sakit'];
+            const isOptional = optionalStatuses.includes(status);
+            
+            const jamMasukRequired = document.getElementById('jammasuk-required');
+            const jamKeluarRequired = document.getElementById('jamkeluar-required');
+            
+            if (jamMasukInput) {
+                if (isOptional) {
+                    jamMasukInput.removeAttribute('required');
+                    jamMasukInput.setAttribute('data-optional', 'true');
+                    if (jamMasukRequired) jamMasukRequired.style.display = 'none';
+                } else {
+                    jamMasukInput.setAttribute('required', 'required');
+                    jamMasukInput.removeAttribute('data-optional');
+                    if (jamMasukRequired) jamMasukRequired.style.display = 'inline';
+                }
+            }
+            
+            if (jamKeluarInput) {
+                if (isOptional) {
+                    jamKeluarInput.removeAttribute('required');
+                    jamKeluarInput.setAttribute('data-optional', 'true');
+                    if (jamKeluarRequired) jamKeluarRequired.style.display = 'none';
+                } else {
+                    jamKeluarInput.setAttribute('required', 'required');
+                    jamKeluarInput.removeAttribute('data-optional');
+                    if (jamKeluarRequired) jamKeluarRequired.style.display = 'inline';
+                }
+            }
+        }
+        
+        // Update on status change
+        statusSelect.addEventListener('change', updateTimeFieldsRequired);
+        
+        // Update on page load
+        updateTimeFieldsRequired();
+    }
+    
     // Form validation before submit
     const absensiForm = document.querySelector('form');
     if (absensiForm) {
         absensiForm.addEventListener('submit', function(e) {
             let isValid = true;
             
-            // Validate jam masuk
-            if (jamMasukInput) {
+            const status = statusSelect ? statusSelect.value : '';
+            const optionalStatuses = ['alpha', 'ijin', 'sakit'];
+            const isOptional = optionalStatuses.includes(status);
+            
+            // Validate jam masuk (only if required)
+            if (jamMasukInput && !isOptional) {
+                if (!validateTimeInput(jamMasukInput)) {
+                    isValid = false;
+                    jamMasukInput.focus();
+                }
+            } else if (jamMasukInput && isOptional && jamMasukInput.value.trim()) {
+                // If optional but has value, validate it
                 if (!validateTimeInput(jamMasukInput)) {
                     isValid = false;
                     jamMasukInput.focus();
                 }
             }
             
-            // Validate jam keluar
+            // Validate jam keluar (only if required)
             if (jamKeluarInput && isValid) {
-                if (!validateTimeInput(jamKeluarInput)) {
-                    isValid = false;
-                    jamKeluarInput.focus();
+                if (!isOptional) {
+                    if (!validateTimeInput(jamKeluarInput)) {
+                        isValid = false;
+                        jamKeluarInput.focus();
+                    }
+                } else if (jamKeluarInput.value.trim()) {
+                    // If optional but has value, validate it
+                    if (!validateTimeInput(jamKeluarInput)) {
+                        isValid = false;
+                        jamKeluarInput.focus();
+                    }
                 }
             }
             

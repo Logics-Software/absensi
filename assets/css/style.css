@@ -2304,12 +2304,12 @@ body.mapbox-fullscreen-open {
     margin: 0.5cm;
     size: A4 landscape;
   }
-  
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
+
   /* Hide everything except report */
   .no-print,
   .navbar,
@@ -2321,7 +2321,7 @@ body.mapbox-fullscreen-open {
     display: none !important;
     visibility: hidden !important;
   }
-  
+
   /* Show report */
   .print-report-card {
     display: block !important;
@@ -2329,26 +2329,26 @@ body.mapbox-fullscreen-open {
     page-break-inside: avoid;
     width: 100%;
   }
-  
+
   .print-report-card .card-header {
     display: block !important;
     background-color: #6c757d !important;
     color: #fff !important;
     padding: 10px;
   }
-  
+
   .print-report-card .card-body {
     display: block !important;
     padding: 10px;
   }
-  
+
   .print-report-card .table-responsive,
   .print-report-card .print-table-wrapper {
     display: block !important;
     overflow: visible !important;
     width: 100%;
   }
-  
+
   .print-report-card .print-table,
   .print-report-card table.print-table {
     display: table !important;
@@ -2357,19 +2357,19 @@ body.mapbox-fullscreen-open {
     border-collapse: collapse !important;
     border: 1px solid #000 !important;
   }
-  
+
   .print-report-card .print-table thead {
     display: table-header-group !important;
   }
-  
+
   .print-report-card .print-table tbody {
     display: table-row-group !important;
   }
-  
+
   .print-report-card .print-table tr {
     display: table-row !important;
   }
-  
+
   .print-report-card .print-table th,
   .print-report-card .print-table td {
     display: table-cell !important;
@@ -2377,55 +2377,88 @@ body.mapbox-fullscreen-open {
     padding: 2px 4px !important;
     text-align: center !important;
   }
-  
+
   .print-report-card .print-table thead th {
     background-color: #f8f9fa !important;
     font-weight: bold !important;
   }
-  
+
   body {
     margin: 0;
     padding: 10px;
     background: white;
   }
-  
+
   .container-fluid,
   .row,
   .col-12 {
     padding: 0;
     margin: 0;
   }
+
+  /* Ensure status text colors print correctly */
+  .status-a {
+    color: #dc3545 !important; /* Merah */
+  }
+
+  .status-i {
+    color: #ffc12f !important; /* Kuning Warning */
+  }
+
+  .status-s {
+    color: #28a745 !important; /* Hijau */
+  }
+
+  .status-t {
+    color: #ff69b4 !important; /* Pink */
+  }
+
+  .status-p {
+    color: #007bff !important; /* Biru */
+  }
 }
 
-/* Status colors for attendance report */
-.status-h {
-  background-color: #d4edda;
-  color: #155724;
+/* Status colors for attendance report - High specificity to override table styles */
+.print-table td.status-h,
+.table td.status-h,
+td.status-h {
+  background-color: #d4edda !important;
+  color: #155724 !important;
 }
 
-.status-i {
-  background-color: #fff3cd;
-  color: #856404;
+.print-table td.status-i,
+.table td.status-i,
+td.status-i {
+  background-color: #fff3cd !important;
+  color: #856404 !important; /* Kuning Warning */
 }
 
-.status-t {
-  background-color: #f8d7da;
-  color: #721c24;
+.print-table td.status-t,
+.table td.status-t,
+td.status-t {
+  background-color: #f8d7da !important;
+  color: #ff69b4 !important; /* Pink */
 }
 
-.status-a {
-  background-color: #f5c6cb;
-  color: #721c24;
+.print-table td.status-a,
+.table td.status-a,
+td.status-a {
+  background-color: #f5c6cb !important;
+  color: #dc3545 !important; /* Merah */
 }
 
-.status-p {
-  background-color: #ffeaa7;
-  color: #856404;
+.print-table td.status-p,
+.table td.status-p,
+td.status-p {
+  background-color: #ffeaa7 !important;
+  color: #007bff !important; /* Biru */
 }
 
-.status-s {
-  background-color: #cce5ff;
-  color: #004085;
+.print-table td.status-s,
+.table td.status-s,
+td.status-s {
+  background-color: #cce5ff !important;
+  color: #28a745 !important; /* Hijau */
 }
 
 /* Laporan Kehadiran Table Styles */

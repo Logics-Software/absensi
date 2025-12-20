@@ -240,6 +240,7 @@ $router->post('/fingerimport/upload', 'FingerImportController', 'upload');
 
 // Laporan Kehadiran routes (admin, guru)
 $router->get('/laporankehadiran', 'LaporanKehadiranController', 'index');
+$router->get('/laporankehadiran/detail/{nisn}', 'LaporanKehadiranController', 'detail');
 
 // Master Guru routes (admin only)
 $router->get('/masterguru', 'MasterGuruController', 'index');

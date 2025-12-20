@@ -120,14 +120,36 @@ if (!function_exists('getStatusClass')) {
                                             ?>
                                                 <tr>
                                                     <td class="laporan-table-cell-center"><?= $no++ ?></td>
-                                                    <td class="laporan-table-cell-center"><?= htmlspecialchars($siswa['nisn'] ?? '-') ?></td>
-                                                    <td><?= htmlspecialchars($siswa['namasiswa'] ?? '-') ?></td>
+                                                    <td class="laporan-table-cell-center">
+                                                        <a href="/laporankehadiran/detail/<?= urlencode($siswa['nisn']) ?>?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" 
+                                                           class="text-decoration-none" 
+                                                           title="Klik untuk melihat detail absensi">
+                                                            <?= htmlspecialchars($siswa['nisn'] ?? '-') ?>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/laporankehadiran/detail/<?= urlencode($siswa['nisn']) ?>?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" 
+                                                           class="text-decoration-none" 
+                                                           title="Klik untuk melihat detail absensi">
+                                                            <?= htmlspecialchars($siswa['namasiswa'] ?? '-') ?>
+                                                        </a>
+                                                    </td>
                                                     <?php foreach ($laporan['tanggal_aktif'] as $tanggal): ?>
                                                         <?php 
                                                         $code = $laporan['absensi_data'][$siswa['nisn']][$tanggal] ?? 'A';
                                                         $class = getStatusClass($code);
+                                                        // Define color mapping for inline style fallback
+                                                        $colorMap = [
+                                                            'A' => '#dc3545', // Merah
+                                                            'I' => '#856404', // Kuning Warning
+                                                            'S' => '#28a745', // Hijau
+                                                            'T' => '#ff69b4', // Pink
+                                                            'P' => '#007bff', // Biru
+                                                            'H' => '#155724'  // Hijau
+                                                        ];
+                                                        $statusColor = $colorMap[$code] ?? '#000000';
                                                         ?>
-                                                        <td class="laporan-table-cell-center laporan-table-cell-bold <?= $class ?>">
+                                                        <td class="laporan-table-cell-center laporan-table-cell-bold <?= $class ?>" style="color: <?= $statusColor ?> !important;">
                                                             <?= $code ?>
                                                         </td>
                                                     <?php endforeach; ?>
@@ -198,12 +220,15 @@ function getStatusClass(code) {
     return classMap[code] || '';
 }
 
-// Apply status classes
+// Apply status classes only if not already applied (preserve PHP-generated classes)
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.print-table td').forEach(function(td) {
         const code = td.textContent.trim();
-        if (code && ['H', 'I', 'T', 'A', 'P', 'S'].includes(code)) {
-            td.className = 'text-center font-weight-bold ' + getStatusClass(code);
+        // Only apply if the cell doesn't already have a status class
+        if (code && ['H', 'I', 'T', 'A', 'P', 'S'].includes(code) && !td.classList.contains('status-h') && !td.classList.contains('status-i') && !td.classList.contains('status-t') && !td.classList.contains('status-a') && !td.classList.contains('status-p') && !td.classList.contains('status-s')) {
+            // Preserve existing classes and add status class
+            const existingClasses = td.className;
+            td.className = existingClasses + ' ' + getStatusClass(code);
         }
     });
 });
