@@ -10,7 +10,8 @@ class Controller {
         $viewFile = __DIR__ . '/../views/' . $view . '.php';
         if (file_exists($viewFile)) {
             // Extract data to make variables available in view
-            extract($data, EXTR_SKIP);
+            // Use EXTR_OVERWRITE to ensure controller data takes precedence
+            extract($data, EXTR_OVERWRITE);
             require $viewFile;
         } else {
             die("View not found: {$view}");

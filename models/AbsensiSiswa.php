@@ -293,5 +293,16 @@ class AbsensiSiswa {
         $sql = "SELECT nisn, namasiswa FROM mastersiswa WHERE status = 'aktif' ORDER BY namasiswa";
         return $this->db->fetchAll($sql, []);
     }
+    
+    /**
+     * Get absensi by NISN and date
+     * @param string $nisn NISN siswa
+     * @param string $tanggal Format: Y-m-d
+     * @return array|null Data absensi atau null jika tidak ditemukan
+     */
+    public function getByNisnAndDate($nisn, $tanggal) {
+        $sql = "SELECT * FROM absensi_siswa WHERE nisn = ? AND tanggalabsen = ? ORDER BY id DESC LIMIT 1";
+        return $this->db->fetchOne($sql, [$nisn, $tanggal]);
+    }
 }
 

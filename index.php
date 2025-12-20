@@ -56,7 +56,8 @@ spl_autoload_register(function ($class) {
         __DIR__ . '/core/' . $class . '.php',
         __DIR__ . '/models/' . $class . '.php',
         __DIR__ . '/controllers/' . $class . '.php',
-        __DIR__ . '/controllers/api/' . $class . '.php'
+        __DIR__ . '/controllers/api/' . $class . '.php',
+        __DIR__ . '/services/' . $class . '.php'
     ];
     
     foreach ($paths as $path) {
@@ -152,6 +153,11 @@ $router->get('/wilayah/api/kelurahan', 'WilayahController', 'apiKelurahan');
 $router->get('/konfigurasi', 'KonfigurasiController', 'index');
 $router->post('/konfigurasi', 'KonfigurasiController', 'index');
 
+// Konfigurasi Fonnte routes (admin only)
+$router->get('/konfigurasi-fonnte', 'KonfigurasiFonnteController', 'index');
+$router->post('/konfigurasi-fonnte', 'KonfigurasiFonnteController', 'index');
+$router->get('/konfigurasi-fonnte/test', 'KonfigurasiFonnteController', 'test');
+
 // Setting Jam Belajar routes (admin only)
 $router->get('/settingjambelajar', 'SettingJamBelajarController', 'index');
 $router->post('/settingjambelajar', 'SettingJamBelajarController', 'index');
@@ -159,6 +165,20 @@ $router->post('/settingjambelajar', 'SettingJamBelajarController', 'index');
 // Kalender Akademik routes (admin only)
 $router->get('/kalenderakademik', 'KalenderAkademikController', 'index');
 $router->post('/kalenderakademik', 'KalenderAkademikController', 'index');
+
+// WA Blast routes
+$router->get('/wablast', 'WablastController', 'index');
+$router->get('/wablast/create', 'WablastController', 'create');
+$router->post('/wablast/create', 'WablastController', 'create');
+$router->get('/wablast/view/{id}', 'WablastController', 'viewCampaign');
+$router->post('/wablast/send/{id}', 'WablastController', 'send');
+$router->post('/wablast/resend/{campaignId}/{messageId}', 'WablastController', 'resend');
+$router->post('/wablast/delete/{id}', 'WablastController', 'delete');
+$router->get('/wablast/api/recipients', 'WablastController', 'apiGetRecipients');
+
+// WA Blast Webhook (no auth required - Fonnte will call this)
+$router->post('/wablast/webhook', 'WablastWebhookController', 'handle');
+$router->get('/wablast/webhook', 'WablastWebhookController', 'handle'); // Some services use GET for verification
 
 // Master Guru routes (admin only)
 $router->get('/masterguru', 'MasterGuruController', 'index');

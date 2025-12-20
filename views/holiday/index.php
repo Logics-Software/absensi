@@ -44,9 +44,10 @@ require __DIR__ . '/../layouts/header.php';
     <div class="row">
         <div class="col-12">
             <?php 
-            // Use normalized $view from above (already normalized at line 12-21)
+            // Use normalized $view from above (already normalized at line 12-16)
             // $view is already normalized, so use it directly
             $currentView = $view;
+            $finalView = $view; // Ensure $finalView is defined
             ?>
             <div class="card">
                 <div class="card-header">
@@ -62,14 +63,6 @@ require __DIR__ . '/../layouts/header.php';
                 
                 <div class="card-body">
                     <?php 
-                    // CRITICAL FIX: Get view from multiple sources to ensure it's correct
-                    $finalView = 'calendar'; // Default
-                    if (isset($view) && trim(strtolower($view)) === 'list') {
-                        $finalView = 'list';
-                    } elseif (isset($_GET['view']) && trim(strtolower($_GET['view'])) === 'list') {
-                        $finalView = 'list';
-                    }
-                    
                     // Include the appropriate view file based on $finalView
                     if ($finalView === 'list') {
                         $listFile = __DIR__ . '/list.php';

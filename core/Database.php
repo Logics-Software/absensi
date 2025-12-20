@@ -71,7 +71,9 @@ class Database {
     }
     
     public function fetchOne($sql, $params = []) {
-        return $this->query($sql, $params)->fetch();
+        $result = $this->query($sql, $params)->fetch();
+        // Return false if no result, or array if found
+        return $result ?: false;
     }
     
     public function lastInsertId() {

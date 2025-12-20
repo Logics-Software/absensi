@@ -148,15 +148,20 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                                 </svg>
                             </button>
                             <div class="nav-dropdown-menu">
-                                <a href="/konfigurasi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false ? 'active' : '' ?>">Konfigurasi</a>
+                                <a href="/konfigurasi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi') !== false && strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi-fonnte') === false ? 'active' : '' ?>">Konfigurasi</a>
+                                <div class="dropdown-divider"></div>
                                 <a href="/users" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/users') !== false ? 'active' : '' ?>">User</a>
                                 <a href="/wilayah/provinsi" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wilayah') !== false ? 'active' : '' ?>">Wilayah</a>
+                                <div class="dropdown-divider"></div>
                                 <a href="/tahunajaran" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/tahunajaran') !== false ? 'active' : '' ?>">Tahun Ajaran</a>
                                 <a href="/jurusan" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/jurusan') !== false ? 'active' : '' ?>">Jurusan</a>
                                 <a href="/kelas" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/kelas') !== false ? 'active' : '' ?>">Kelas</a>
                                 <a href="/settingjambelajar" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/settingjambelajar') !== false ? 'active' : '' ?>">Jam Belajar</a>
                                 <a href="/holiday" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/holiday') !== false ? 'active' : '' ?>">Hari Libur</a>
                                 <a href="/kalenderakademik" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/kalenderakademik') !== false ? 'active' : '' ?>">Kalender Akademik</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="/konfigurasi-fonnte" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/konfigurasi-fonnte') !== false ? 'active' : '' ?>">Konfigurasi Fonnte</a>
+                                <a href="/wablast" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/wablast') !== false ? 'active' : '' ?>">WA Blast</a>
                             </div>
                         </div>
                         <div class="nav-dropdown">
@@ -184,8 +189,6 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                             </div>
                         </div>
                         <?php endif; ?>
-                        
-                        <a href="/messages" class="nav-link <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/messages') !== false ? 'active' : '' ?>">Pesan</a>                        
                     </nav>
 
                     <!-- User Profile Section -->

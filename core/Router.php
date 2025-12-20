@@ -37,19 +37,22 @@ class Router {
         $method = $_SERVER['REQUEST_METHOD'];
         
         // Skip routing for static files (assets, uploads, images, etc.)
+        // This must be done BEFORE any other processing to ensure assets are served correctly
         $staticExtensions = ['.css', '.js', '.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.pdf', '.doc', '.docx', '.xls', '.xlsx'];
         $staticPaths = ['/assets/', '/uploads/', '/favicon.ico'];
         
+        // Check static paths first (most common)
         foreach ($staticPaths as $staticPath) {
             if (strpos($uri, $staticPath) === 0) {
-                // Let web server handle static files
+                // Let web server handle static files - don't process through router
                 return;
             }
         }
         
+        // Check static file extensions
         foreach ($staticExtensions as $ext) {
             if (substr($uri, -strlen($ext)) === $ext) {
-                // Let web server handle static files
+                // Let web server handle static files - don't process through router
                 return;
             }
         }
