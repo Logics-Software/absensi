@@ -177,7 +177,7 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                             </div>
                         </div>
                         <div class="nav-dropdown">
-                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/absensiguru') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/absensiguru') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/fingerimport') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
                                 Absensi
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
                                     <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -186,6 +186,8 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                             <div class="nav-dropdown-menu">
                                 <a href="/absensisiswa" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensisiswa') !== false ? 'active' : '' ?>">Absensi Siswa</a>
                                 <a href="/absensiguru" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/absensiguru') !== false ? 'active' : '' ?>">Absensi Guru</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="/fingerimport" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/fingerimport') !== false ? 'active' : '' ?>">Upload Data Fingerprint</a>
                             </div>
                         </div>
                         <?php endif; ?>

@@ -70,6 +70,60 @@ spl_autoload_register(function ($class) {
             return;
         }
     }
+    
+    // Autoload vendor libraries (PhpSpreadsheet and dependencies)
+    // Handle PSR-4 namespaces
+    $vendorDir = __DIR__ . '/vendor';
+    
+    // PhpOffice\PhpSpreadsheet namespace
+    if (strpos($class, 'PhpOffice\\PhpSpreadsheet\\') === 0) {
+        $relativeClass = substr($class, strlen('PhpOffice\\PhpSpreadsheet\\'));
+        $file = $vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
+    
+    // PSR\SimpleCache namespace
+    if (strpos($class, 'Psr\\SimpleCache\\') === 0) {
+        $relativeClass = substr($class, strlen('Psr\\SimpleCache\\'));
+        $file = $vendorDir . '/psr/simple-cache/src/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
+    
+    // Matrix namespace
+    if (strpos($class, 'Matrix\\') === 0) {
+        $relativeClass = substr($class, strlen('Matrix\\'));
+        $file = $vendorDir . '/markbaker/matrix/classes/src/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
+    
+    // Complex namespace
+    if (strpos($class, 'Complex\\') === 0) {
+        $relativeClass = substr($class, strlen('Complex\\'));
+        $file = $vendorDir . '/markbaker/complex/classes/src/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
+    
+    // Composer\Pcre namespace
+    if (strpos($class, 'Composer\\Pcre\\') === 0) {
+        $relativeClass = substr($class, strlen('Composer\\Pcre\\'));
+        $file = $vendorDir . '/composer/pcre/src/' . str_replace('\\', '/', $relativeClass) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
 });
 
 // Start session
@@ -179,6 +233,10 @@ $router->get('/wablast/api/recipients', 'WablastController', 'apiGetRecipients')
 // WA Blast Webhook (no auth required - Fonnte will call this)
 $router->post('/wablast/webhook', 'WablastWebhookController', 'handle');
 $router->get('/wablast/webhook', 'WablastWebhookController', 'handle'); // Some services use GET for verification
+
+// Finger Import routes (admin only)
+$router->get('/fingerimport', 'FingerImportController', 'index');
+$router->post('/fingerimport/upload', 'FingerImportController', 'upload');
 
 // Master Guru routes (admin only)
 $router->get('/masterguru', 'MasterGuruController', 'index');
