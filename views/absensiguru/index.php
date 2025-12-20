@@ -106,9 +106,9 @@ require __DIR__ . '/../layouts/header.php';
                                     <th>No.</th>
                                     <th class="th-sortable"><a href="<?= getSortUrl('nip', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">NIP</a></th>
                                     <th>Nama Guru</th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('tanggalabsen', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Tanggal Absen</a></th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('jammasuk', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Jam Masuk</a></th>
-                                    <th class="th-sortable"><a href="<?= getSortUrl('jamkeluar', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Jam Pulang</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('tanggalabsen', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Tanggal</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('jammasuk', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Masuk</a></th>
+                                    <th class="th-sortable"><a href="<?= getSortUrl('jamkeluar', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Pulang</a></th>
                                     <th>Durasi</th>
                                     <th class="th-sortable"><a href="<?= getSortUrl('status', $sortBy, $sortOrder, $search, $perPage, $period, $dateFrom, $dateTo) ?>">Status</a></th>
                                     <th>Keterangan</th>
@@ -129,10 +129,10 @@ require __DIR__ . '/../layouts/header.php';
                                     <td align="center"><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($absensi['nip'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($absensi['namaguru'] ?? '-') ?></td>
-                                    <td><?= !empty($absensi['tanggalabsen']) ? date('d/m/Y', strtotime($absensi['tanggalabsen'])) : '-' ?></td>
-                                    <td><?= !empty($absensi['jammasuk']) ? date('H:i', strtotime($absensi['jammasuk'])) : '-' ?></td>
-                                    <td><?= !empty($absensi['jamkeluar']) ? date('H:i', strtotime($absensi['jamkeluar'])) : '-' ?></td>
-                                    <td>
+                                    <td align="center"><?= !empty($absensi['tanggalabsen']) ? date('d/m/Y', strtotime($absensi['tanggalabsen'])) : '-' ?></td>
+                                    <td align="center"><?= !empty($absensi['jammasuk']) ? date('H:i', strtotime($absensi['jammasuk'])) : '-' ?></td>
+                                    <td align="center"><?= !empty($absensi['jamkeluar']) ? date('H:i', strtotime($absensi['jamkeluar'])) : '-' ?></td>
+                                    <td align="center">
                                         <?php if (!empty($absensi['jammasuk']) && !empty($absensi['jamkeluar'])): ?>
                                             <?= sprintf('%02d:%02d:%02d', $absensi['durasijam'], $absensi['durasimenit'], $absensi['durasidetik']) ?>
                                         <?php else: ?>

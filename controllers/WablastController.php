@@ -742,7 +742,7 @@ class WablastController extends Controller {
         $replacements['{{hari}}'] = date('l'); // Day name in English
         $replacements['{{hari_indonesia}}'] = $this->getIndonesianDayName(date('w')); // 0=Sunday, 6=Saturday
         
-        // Get absensi data for jam masuk and jam keluar
+        // Get absensi data for jam masuk and jam keluar from database fields jammasuk and jamkeluar
         $jamMasuk = date('H:i'); // Default to current time
         $jamKeluar = date('H:i'); // Default to current time
         $status = 'Hadir'; // Default status
@@ -751,7 +751,7 @@ class WablastController extends Controller {
             // Get absensi data from table absensi_siswa
             $absensi = $absensiSiswaModel->getByNisnAndDate($siswa['nisn'], $tanggal);
             if ($absensi) {
-                // Format jam masuk (from time format to H:i)
+                // Format jam masuk from field 'jammasuk' (from time format to H:i)
                 if (!empty($absensi['jammasuk'])) {
                     // jammasuk might be in format 'HH:MM:SS' or 'HH:MM'
                     $jamMasukTime = strtotime($absensi['jammasuk']);
@@ -763,7 +763,7 @@ class WablastController extends Controller {
                     }
                 }
                 
-                // Format jam keluar (from time format to H:i)
+                // Format jam keluar from field 'jamkeluar' (from time format to H:i)
                 if (!empty($absensi['jamkeluar'])) {
                     // jamkeluar might be in format 'HH:MM:SS' or 'HH:MM'
                     $jamKeluarTime = strtotime($absensi['jamkeluar']);
@@ -782,7 +782,7 @@ class WablastController extends Controller {
             }
         }
         
-        // Time replacements (from absensi data)
+        // Time replacements (from absensi data - field jammasuk and jamkeluar)
         $replacements['{{jam_masuk}}'] = $jamMasuk;
         $replacements['{{jam_keluar}}'] = $jamKeluar;
         

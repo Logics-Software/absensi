@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS `setting_jam_belajar` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `senin` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasuksenin` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangsenin` VARCHAR(5) NULL DEFAULT NULL,
+  `selasa` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasukselasa` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangselasa` VARCHAR(5) NULL DEFAULT NULL,
+  `rabu` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasukrabu` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangrabu` VARCHAR(5) NULL DEFAULT NULL,
+  `kamis` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasukkamis` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangkamis` VARCHAR(5) NULL DEFAULT NULL,
+  `jumat` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasukjumat` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangjumat` VARCHAR(5) NULL DEFAULT NULL,
+  `sabtu` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasuksabtu` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangsabtu` VARCHAR(5) NULL DEFAULT NULL,
+  `minggu` ENUM('aktif', 'nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `jammasukminggu` VARCHAR(5) NULL DEFAULT NULL,
+  `jampulangminggu` VARCHAR(5) NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

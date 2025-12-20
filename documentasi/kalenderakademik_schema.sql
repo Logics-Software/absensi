@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS `kalenderakademik` (
+  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tanggal` DATE NOT NULL,
+  `jammasuk` TIME NULL DEFAULT NULL,
+  `jamkeluar` TIME NULL DEFAULT NULL,
+  `keterangan` VARCHAR(255) NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_tanggal` (`tanggal`),
+  INDEX `idx_tanggal_month` (`tanggal`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

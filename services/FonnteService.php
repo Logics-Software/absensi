@@ -225,18 +225,8 @@ class FonnteService {
         // Use the correct format according to Fonnte documentation
         // No need for multiple variations - just use the correct format
         
-        // Log request data before sending
-        error_log("=== Fonnte sendMessage Request ===");
-        error_log("Request Data (Fonnte API format): " . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        error_log("Original Phone: {$phoneNumber}");
-        error_log("Formatted Phone: {$formattedPhone}");
-        error_log("Phone Length: " . strlen($formattedPhone));
-        error_log("API URL: {$url}");
-        error_log("API Key: " . substr($this->apiKey, 0, 10) . "..." . (strlen($this->apiKey) > 10 ? " (length: " . strlen($this->apiKey) . ")" : ""));
-        error_log("Device ID: " . ($this->deviceId ?: 'not set'));
-        error_log("Clean Message Length: " . strlen($cleanMessage));
-        error_log("Original Message Length: " . strlen($message));
-        error_log("================================");
+        // Log request data (only in debug mode or on error)
+        // Detailed logging removed to reduce log file size
         
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -267,10 +257,10 @@ class FonnteService {
         curl_close($ch);
         
         // Log request details for debugging
-        error_log("Fonnte sendMessage - HTTP Code: {$httpCode}");
-        error_log("Fonnte sendMessage - CURL Error: " . ($error ?: 'none'));
-        error_log("Fonnte sendMessage - Full Response: " . $response);
-        error_log("Fonnte sendMessage - Response Length: " . strlen($response));
+        // Log response only on error
+        if ($httpCode !== 200 || $error) {
+            error_log("Fonnte sendMessage - HTTP Code: {$httpCode}, CURL Error: " . ($error ?: 'none'));
+        }
         
         if ($error) {
             error_log("Fonnte sendMessage - CURL Error: " . $error);
@@ -359,8 +349,7 @@ class FonnteService {
             throw new Exception($errorMsg);
         }
         
-        // Log success
-        error_log("Fonnte sendMessage - Success: " . json_encode($result));
+        // Success - no need to log unless debugging
         
         return $result;
     }
@@ -473,13 +462,13 @@ class FonnteService {
                 curl_close($ch);
                 
                 if ($curlError) {
-                    error_log("Fonnte checkDevice ($endpoint) CURL error: " . $curlError);
+                    // CURL error - only log if critical
                     $lastError = "CURL Error: " . $curlError;
                     continue; // Try next endpoint
                 }
                 
                 $hasConnection = true; // We can reach the API
-                error_log("Fonnte checkDevice ($endpoint) HTTP $httpCode");
+                // HTTP response - only log on error
                 
                 // HTTP 200 = Success, API key works
                 if ($httpCode === 200) {

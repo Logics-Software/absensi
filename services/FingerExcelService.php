@@ -293,7 +293,6 @@ class FingerExcelService {
                 // Jika menemukan minimal 3 keyword header, ini adalah header row
                 if ($foundHeaderKeywords >= 3) {
                     $headerRow = $row;
-                    error_log("Header found at row {$row} for employee '{$employeeInfo['nama']}' at row {$startRow} (found {$foundHeaderKeywords} keywords)");
                     break;
                 }
                 
@@ -308,7 +307,6 @@ class FingerExcelService {
                     }
                     if ($filledCells >= 5) {
                         $headerRow = $row;
-                        error_log("Header found (fallback) at row {$row} for employee '{$employeeInfo['nama']}' at row {$startRow}");
                         break;
                     }
                 }
@@ -342,9 +340,6 @@ class FingerExcelService {
             
             // Baca logs mulai dari baris setelah header sampai sebelum employee berikutnya
             $logs = $this->getAttendanceLogsFromRow($headerRow, $endRow);
-            
-            // Debug logging
-            error_log("Employee: {$employeeInfo['nama']} (Row {$startRow}-{$endRow}), Header: {$headerRow}, Logs found: " . count($logs));
             
             $employees[] = [
                 'employee' => $employeeInfo,

@@ -14,17 +14,8 @@ class WablastWebhookController extends Controller {
         // Get raw input
         $rawInput = file_get_contents('php://input');
         
-        // Log webhook for debugging
-        error_log("=== Fonnte Webhook Debug ===");
-        error_log("Method: " . ($_SERVER['REQUEST_METHOD'] ?? 'not set'));
-        error_log("Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
-        error_log("Raw Input: " . ($rawInput ?: '(empty)'));
-        error_log("POST data: " . print_r($_POST, true));
-        error_log("GET data: " . print_r($_GET, true));
-        
         // Handle GET request (verification or test)
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            error_log("GET request received - returning success for verification");
             http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'message' => 'Webhook endpoint is active']);
@@ -40,15 +31,13 @@ class WablastWebhookController extends Controller {
             $jsonError = json_last_error();
             
             if ($jsonError !== JSON_ERROR_NONE) {
-                error_log("JSON decode error: " . json_last_error_msg() . " (code: $jsonError)");
-                error_log("Raw input (first 500 chars): " . substr($rawInput, 0, 500));
+                error_log("Webhook JSON decode error: " . json_last_error_msg());
             }
         }
         
         // If JSON parsing failed, try to get data from POST
         if (!$data && !empty($_POST)) {
             $data = $_POST;
-            error_log("Using POST data instead of JSON");
         }
         
         // If still no data, check if it's form-urlencoded
@@ -56,13 +45,12 @@ class WablastWebhookController extends Controller {
             parse_str($rawInput, $parsedData);
             if (!empty($parsedData)) {
                 $data = $parsedData;
-                error_log("Using parsed form-urlencoded data");
             }
         }
         
         // If still no data, return error with details
         if (!$data) {
-            error_log("No data received in webhook");
+            error_log("Webhook: No data received");
             http_response_code(400);
             header('Content-Type: application/json');
             echo json_encode([
@@ -92,14 +80,11 @@ class WablastWebhookController extends Controller {
                 $status = $data['status'] ?? $data['state'] ?? null;
                 $phoneNumber = $data['phone'] ?? $data['target'] ?? $data['phone_number'] ?? null;
                 
-                error_log("Processing webhook - messageId: $messageId, status: $status, phone: $phoneNumber");
-                
                 // Find message by fonnte_message_id or phone number
                 $message = null;
                 if ($messageId) {
                     $sql = "SELECT * FROM wa_messages WHERE fonnte_message_id = ? LIMIT 1";
                     $message = $this->db->fetchOne($sql, [$messageId]);
-                    error_log("Found message by ID: " . ($message ? 'yes' : 'no'));
                 }
                 
                 if (!$message && $phoneNumber) {
@@ -115,7 +100,6 @@ class WablastWebhookController extends Controller {
                     
                     $sql = "SELECT * FROM wa_messages WHERE nomor_hp LIKE ? AND status = 'sent' ORDER BY created_at DESC LIMIT 1";
                     $message = $this->db->fetchOne($sql, ['%' . $phoneNumber]);
-                    error_log("Found message by phone: " . ($message ? 'yes' : 'no'));
                 }
                 
                 if ($message) {

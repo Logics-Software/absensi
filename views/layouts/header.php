@@ -190,6 +190,17 @@ if (Auth::check() && $currentUser && !$isMapPage): ?><header class="app-header">
                                 <a href="/fingerimport" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/fingerimport') !== false ? 'active' : '' ?>">Upload Data Fingerprint</a>
                             </div>
                         </div>
+                        <div class="nav-dropdown">
+                            <button class="nav-link nav-dropdown-toggle <?= (strpos($_SERVER['REQUEST_URI'] ?? '', '/laporankehadiran') !== false) ? 'active' : '' ?>" type="button" aria-expanded="false">
+                                Laporan
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 0.25rem;">
+                                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                                <a href="/laporankehadiran" class="nav-dropdown-item <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/laporankehadiran') !== false ? 'active' : '' ?>">Rekap Absensi Per Kelas</a>
+                            </div>
+                        </div>
                         <?php endif; ?>
                     </nav>
 

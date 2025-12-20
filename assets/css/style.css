@@ -2294,6 +2294,171 @@ body.mapbox-fullscreen-open {
   outline: none;
 }
 
+/* ========================================
+   LAPORAN KEHADIRAN STYLES
+   ======================================== */
+
+/* Print Styles for Laporan Kehadiran */
+@media print {
+  @page {
+    margin: 0.5cm;
+    size: A4 landscape;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Hide everything except report */
+  .no-print,
+  .navbar,
+  .header-nav-menu,
+  .header-user-profile,
+  .app-header,
+  header,
+  nav {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Show report */
+  .print-report-card {
+    display: block !important;
+    visibility: visible !important;
+    page-break-inside: avoid;
+    width: 100%;
+  }
+  
+  .print-report-card .card-header {
+    display: block !important;
+    background-color: #6c757d !important;
+    color: #fff !important;
+    padding: 10px;
+  }
+  
+  .print-report-card .card-body {
+    display: block !important;
+    padding: 10px;
+  }
+  
+  .print-report-card .table-responsive,
+  .print-report-card .print-table-wrapper {
+    display: block !important;
+    overflow: visible !important;
+    width: 100%;
+  }
+  
+  .print-report-card .print-table,
+  .print-report-card table.print-table {
+    display: table !important;
+    width: 100% !important;
+    font-size: 7pt !important;
+    border-collapse: collapse !important;
+    border: 1px solid #000 !important;
+  }
+  
+  .print-report-card .print-table thead {
+    display: table-header-group !important;
+  }
+  
+  .print-report-card .print-table tbody {
+    display: table-row-group !important;
+  }
+  
+  .print-report-card .print-table tr {
+    display: table-row !important;
+  }
+  
+  .print-report-card .print-table th,
+  .print-report-card .print-table td {
+    display: table-cell !important;
+    border: 1px solid #000 !important;
+    padding: 2px 4px !important;
+    text-align: center !important;
+  }
+  
+  .print-report-card .print-table thead th {
+    background-color: #f8f9fa !important;
+    font-weight: bold !important;
+  }
+  
+  body {
+    margin: 0;
+    padding: 10px;
+    background: white;
+  }
+  
+  .container-fluid,
+  .row,
+  .col-12 {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* Status colors for attendance report */
+.status-h {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-i {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-t {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-a {
+  background-color: #f5c6cb;
+  color: #721c24;
+}
+
+.status-p {
+  background-color: #ffeaa7;
+  color: #856404;
+}
+
+.status-s {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+/* Laporan Kehadiran Table Styles */
+.laporan-table-header {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.laporan-table-header-no {
+  width: 50px;
+}
+
+.laporan-table-header-nisn {
+  min-width: 75px;
+}
+
+.laporan-table-header-nama {
+  min-width: 150px;
+}
+
+.laporan-table-header-tanggal {
+  width: 30px;
+  font-size: 0.75rem;
+}
+
+.laporan-table-cell-center {
+  text-align: center;
+}
+
+.laporan-table-cell-bold {
+  font-weight: bold;
+}
+
 .phone-input-container:focus-within .phone-number-input {
   outline: none;
 }

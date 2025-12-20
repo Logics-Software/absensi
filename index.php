@@ -238,6 +238,9 @@ $router->get('/wablast/webhook', 'WablastWebhookController', 'handle'); // Some 
 $router->get('/fingerimport', 'FingerImportController', 'index');
 $router->post('/fingerimport/upload', 'FingerImportController', 'upload');
 
+// Laporan Kehadiran routes (admin, guru)
+$router->get('/laporankehadiran', 'LaporanKehadiranController', 'index');
+
 // Master Guru routes (admin only)
 $router->get('/masterguru', 'MasterGuruController', 'index');
 $router->get('/masterguru/create', 'MasterGuruController', 'create');
